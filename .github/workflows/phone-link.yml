@@ -73,9 +73,9 @@ jobs:
       - uses: actions/setup-java@v6
         with: { distribution: temurin, java-version: '17' }
       - uses: gradle/actions/setup-gradle@v5
-        - name: Restore executable bits lost in snapshot pushes
+      - name: Restore executable bits lost in snapshot pushes
         working-directory: android
-          run: chmod +x gradlew
+        run: chmod +x gradlew
       - name: Kotlin client against the Rust desktop
         working-directory: android
         env:
