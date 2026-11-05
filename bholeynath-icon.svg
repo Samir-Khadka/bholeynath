@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Bholeynath icon — original art: gold crescent moon + abstract trishul on deep indigo.
+       This file is the design source for all raster icons (windows/src-tauri/icons,
+       NotchBuddy/*.xcassets, android mipmap). Not copied or traced from any other mark. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#26225E"/>
+      <stop offset="1" stop-color="#17153D"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- Crescent moon: outer circle minus offset inner circle (even-odd). -->
+  <path fill="#E8B84B" fill-rule="evenodd"
+    d="M 46 246 a 138 138 0 1 0 276 0 a 138 138 0 1 0 -276 0 Z
+       M 128 200 a 118 118 0 1 0 236 0 a 118 118 0 1 0 -236 0 Z"/>
+  <!-- Abstract trishul: three prongs, curved bar, shaft. -->
+  <g fill="#E8B84B">
+    <rect x="326" y="221" width="14" height="61"/>
+    <rect x="372" y="180" width="14" height="102"/>
+    <rect x="418" y="221" width="14" height="61"/>
+    <polygon points="319,221 347,221 333,195"/>
+    <polygon points="365,180 393,180 379,154"/>
+    <polygon points="411,221 439,221 425,195"/>
+  </g>
+  <path d="M 318 282 Q 379 312 434 282" stroke="#E8B84B" stroke-width="14" fill="none" stroke-linecap="round"/>
+  <rect x="372" y="297" width="14" height="82" fill="#E8B84B"/>
+</svg>

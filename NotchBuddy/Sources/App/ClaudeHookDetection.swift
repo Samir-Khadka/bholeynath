@@ -1,0 +1,17 @@
+import Foundation
+
+/// True when a parsed ~/.claude/settings.json routes Claude Code SessionStart events to Bholeynath.
+///
+/// Kept free of file access so it can be tested on fixtures instead of the real settings file.
+/// Both the installed app and earlier builds matched on the command text: a hook written by
+/// Bholeynath runs ~/.claude/bholeynath/nb-hook, and the App Store build names NotchBuddy instead.
+func bholeynathHooksPresent(inSettings settings: [String: Any]) -> Bool {
+    guard let hooks = settings["hooks"] as? [String: Any],
+          let sessionStart = hooks["SessionStart"] as? [[String: Any]] else { return false }
+    return sessionStart.contains { group in
+        (group["hooks"] as? [[String: Any]])?.contains { hook in
+            guard let command = hook["command"] as? String else { return false }
+            return command.contains("NotchBuddy") || command.contains("bholeynath")
+        } ?? false
+    }
+}
