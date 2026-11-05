@@ -7,7 +7,7 @@ import org.junit.Test
 
 /** Rules about the relay code that no behaviour test would notice breaking. */
 class RelayGuardsTest {
-    private fun main(path: String) = File("src/main/kotlin/com/bholeynath/android/$path").readText()
+    private fun main(path: String) = File("src/main/kotlin/com/samirkhadka/bholeynath/$path").readText()
 
     @Test fun theWebSocketRelayAndTransportCodeNeverLogOrPrint() {
         for (f in listOf("link/WebSocket.kt", "link/RelayLink.kt", "link/Transport.kt", "link/RelayCrypto.kt")) {

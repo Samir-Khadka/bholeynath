@@ -37,7 +37,7 @@ class AssetsTest {
     }
 
     @Test fun soundTableCoversEveryBundledSound() {
-        val src = File("src/main/kotlin/com/bholeynath/android/sound/SoundPlayer.kt").readText()
+        val src = File("src/main/kotlin/com/samirkhadka/bholeynath/sound/SoundPlayer.kt").readText()
         val mapped = Regex("\"(\\w+)\" to R\\.raw\\.(\\w+)").findAll(src).map { assertEquals(it.groupValues[1], it.groupValues[2]); it.groupValues[1] }.toSet()
         assertEquals(raw.listFiles()!!.map { it.nameWithoutExtension }.toSet(), mapped)
     }

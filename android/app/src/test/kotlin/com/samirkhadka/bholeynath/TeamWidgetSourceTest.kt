@@ -8,7 +8,7 @@ import org.junit.Test
 
 /** Source guards for the Team widget and its choice screen (Android classes only compile in CI). */
 class TeamWidgetSourceTest {
-    private val main = "src/main/kotlin/com/bholeynath/android/"
+    private val main = "src/main/kotlin/com/samirkhadka/bholeynath/"
     private fun read(p: String) = File(p).readText()
     private val config = read(main + "app/TeamConfigActivity.kt")
     private val widget = read(main + "app/TeamWidget.kt")

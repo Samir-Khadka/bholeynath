@@ -60,7 +60,7 @@ class ApprovalAlertsTest {
     }
 
     @Test fun aRequestIsNeverMutedByTheseChoices() {
-        val src = File("src/main/kotlin/com/bholeynath/android/app/Notifications.kt").readText()
+        val src = File("src/main/kotlin/com/samirkhadka/bholeynath/app/Notifications.kt").readText()
         // The channel is always high importance with Narayan's sound; the choices only touch vibration and the wake.
         val block = src.substringAfter("fun applyApprovalSettings").substringBefore("private fun open(")
         assertTrue(block.contains("IMPORTANCE_HIGH"))
@@ -72,7 +72,7 @@ class ApprovalAlertsTest {
     }
 
     @Test fun settingsShowBothChoices() {
-        val ui = File("src/main/kotlin/com/bholeynath/android/ui/SettingsScreens.kt").readText()
+        val ui = File("src/main/kotlin/com/samirkhadka/bholeynath/ui/SettingsScreens.kt").readText()
         assertTrue(ui.contains("R.string.settings_no_wake") && ui.contains("R.string.settings_vibration"))
         assertTrue(ui.contains("VibrationChoice.SHORT") && ui.contains("VibrationChoice.OFF"))
     }

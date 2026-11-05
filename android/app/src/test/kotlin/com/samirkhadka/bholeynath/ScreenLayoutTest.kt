@@ -12,7 +12,7 @@ import org.junit.Test
  * Samir Khadka's permission requires, which must stay reachable and visible.
  */
 class ScreenLayoutTest {
-    private fun src(name: String) = File("src/main/kotlin/com/bholeynath/android/$name").readText()
+    private fun src(name: String) = File("src/main/kotlin/com/samirkhadka/bholeynath/$name").readText()
     private val main get() = src("MainActivity.kt")
     private val settings get() = src("ui/SettingsScreens.kt")
     private val homePanel get() = src("ui/HomePanel.kt")

@@ -29,7 +29,7 @@ class SecureScreensTest {
     }
 
     @Test fun theActivityAppliesAndClearsTheFlagFromThatDecision() {
-        val src = File("src/main/kotlin/com/bholeynath/android/MainActivity.kt").readText()
+        val src = File("src/main/kotlin/com/samirkhadka/bholeynath/MainActivity.kt").readText()
         assertTrue(src.contains("SecureScreens.needed("))
         assertTrue(src.contains("window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)"))
         assertTrue("cleared when the screen is no longer sensitive", src.contains("window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)"))

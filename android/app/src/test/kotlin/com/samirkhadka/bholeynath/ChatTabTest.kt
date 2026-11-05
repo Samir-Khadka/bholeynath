@@ -81,7 +81,7 @@ class BarFitTest {
 
 /** Guards for the Chat tab's screens and the bar (Compose cannot be rendered in a JVM test, so these read the sources). */
 class ChatTabSourceTest {
-    private fun src(name: String) = File("src/main/kotlin/com/bholeynath/android/$name").readText()
+    private fun src(name: String) = File("src/main/kotlin/com/samirkhadka/bholeynath/$name").readText()
     private val chat get() = src("ui/ChatScreen.kt")
     private val bar get() = src("ui/BottomBar.kt")
     private val strings get() = File("src/main/res/values/strings.xml").readText()

@@ -85,7 +85,7 @@ class ShareDraftTest {
 
     // ── The share target (source guards: Android classes only compile in CI) ──────────────────────
 
-    private val main = "src/main/kotlin/com/bholeynath/android/"
+    private val main = "src/main/kotlin/com/samirkhadka/bholeynath/"
     private val activity = File(main + "app/ShareActivity.kt").readText()
     private val manifest = File("src/main/AndroidManifest.xml").readText()
 

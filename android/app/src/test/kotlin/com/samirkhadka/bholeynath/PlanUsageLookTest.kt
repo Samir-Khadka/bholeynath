@@ -19,7 +19,7 @@ class PlanUsageLookTest {
     @Test fun theThresholdsAreNamedConstants() {
         assertEquals(75, PlanUsageLook.CLOSE_FROM)
         assertEquals(90, PlanUsageLook.LIMIT_FROM)
-        val src = File("src/main/kotlin/com/bholeynath/android/core/WidgetData.kt").readText()
+        val src = File("src/main/kotlin/com/samirkhadka/bholeynath/core/WidgetData.kt").readText()
         assertTrue(src.contains("const val CLOSE_FROM = 75") && src.contains("const val LIMIT_FROM = 90"))
     }
 
