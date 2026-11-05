@@ -81,8 +81,8 @@ class LightThemeTest {
             assertFalse("${f.name} hard-codes the island's black", text.contains("IslandSurface."))
             for (colour in listOf("Color.White", "Color.Black", "Color(0x")) {
                 if (!text.contains(colour)) continue
-                // The only ones left are the switch knob, the sheet scrim, the wardrobe tag, the bar's alert dot (the approval colour) and the state colours.
-                assertTrue("${f.name} uses $colour", f.name in setOf("DesignControls.kt", "Sheets.kt", "WardrobeScreen.kt", "BottomBar.kt"))
+                // The only ones left are the switch knob, the sheet scrim, the wardrobe tag, the bar's alert dot (the approval colour), the state colours, and the Shiva frame's gold border in Settings.
+                assertTrue("${f.name} uses $colour", f.name in setOf("DesignControls.kt", "Sheets.kt", "WardrobeScreen.kt", "BottomBar.kt", "SettingsScreens.kt"))
             }
         }
         assertTrue("the island provides the dark tokens", ui("IslandOverlay.kt").contains("LocalTokens provides Tokens.DARK"))

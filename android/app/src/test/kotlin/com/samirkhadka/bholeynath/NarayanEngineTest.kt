@@ -42,7 +42,9 @@ class NarayanEngineTest {
     @Test fun bodyIsASuperellipseOfExponent2_7() {
         val rx = 1.14
         val ry = 0.88
-        for (p in NarayanGeometry.bodyPoints(rx, ry, 1.0, 0.0)) {
+        // The crown (y < 0) is deliberately pinched into a flame/petal tip, so only
+        // the un-pinched half lies on the superellipse.
+        for (p in NarayanGeometry.bodyPoints(rx, ry, 1.0, 0.0).filter { it.y >= 0 }) {
             val v = abs(p.x / rx).pow(2.7) + abs(p.y / ry).pow(2.7)
             assertEquals(1.0, v, 1e-6)
         }
