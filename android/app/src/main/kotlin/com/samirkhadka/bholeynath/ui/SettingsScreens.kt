@@ -16,6 +16,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -372,6 +378,15 @@ fun SettingsScreen(model: AppModel, onHistory: () -> Unit, onGallery: () -> Unit
         item {
             Panel {
                 Column(Modifier.padding(Spacing.INSIDE.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    // Blessing art: framed display art only, never interactive
+                    // and never the companion.
+                    Image(
+                        painter = painterResource(R.drawable.shiva_hero),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).border(1.dp, Color(0xFFD4AF37), RoundedCornerShape(12.dp)),
+                        contentScale = ContentScale.FillWidth
+                    )
+                    Text("ॐ नमः शिवाय", style = TypeScale.SECONDARY.style(t.textDim.c()))
                     Text(stringResource(R.string.about_credit), style = TypeScale.BODY.style(t.text.c()))
                     Text(
                         stringResource(R.string.about_repo),

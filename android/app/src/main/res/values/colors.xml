@@ -49,4 +49,11 @@
     <color name="widget_border_usage_calm">#990E8F9A</color>
     <color name="widget_border_usage_close">#99F2D024</color>
     <color name="widget_border_usage_limit">#99D92D20</color>
+    <!-- Hindu theme palette (same tokens as the Windows frontend's theme.css
+         and the Mac/iPhone HinduTheme): display accents only, never a state colour. -->
+    <color name="hindu_saffron">#FFFF9933</color>
+    <color name="hindu_gold">#FFD4AF37</color>
+    <color name="hindu_indigo">#FF1A1446</color>
+    <color name="hindu_maroon">#FF800000</color>
+    <color name="hindu_parchment">#FFFFF8E7</color>
 </resources>

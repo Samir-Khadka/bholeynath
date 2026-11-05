@@ -9,4 +9,10 @@
     <color name="widget_button">#14000000</color>
     <!-- The orange as text on the light card needs a deeper shade to be readable. -->
     <color name="widget_tone_attention_text">#FFA4570A</color>
+    <!-- Hindu theme palette (same tokens as values/colors.xml): display accents only. -->
+    <color name="hindu_saffron">#FFFF9933</color>
+    <color name="hindu_gold">#FFD4AF37</color>
+    <color name="hindu_indigo">#FF1A1446</color>
+    <color name="hindu_maroon">#FF800000</color>
+    <color name="hindu_parchment">#FFFFF8E7</color>
 </resources>

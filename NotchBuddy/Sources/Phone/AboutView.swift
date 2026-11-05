@@ -37,6 +37,24 @@ struct AboutView: View {
                 .padding(.vertical, 4)
             }
 
+            // Blessing art: framed display art only, never interactive and
+            // never the companion (Narayan stays the figure above).
+            Section {
+                VStack(spacing: 6) {
+                    Image("DeityShiva")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(maxWidth: 240)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .stroke(HinduTheme.blessingBorder, lineWidth: 1.5))
+                    Text("ॐ नमः शिवाय").font(.footnote).foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+            } header: {
+                Text("Blessing")
+            }
+
             Section("Connection") {
                 LabeledContent("iCloud") {
                     Label(iCloudText, systemImage: link.status == .ready ? "checkmark.icloud" : "exclamationmark.icloud")
