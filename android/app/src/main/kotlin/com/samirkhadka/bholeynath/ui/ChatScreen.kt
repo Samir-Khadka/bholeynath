@@ -158,6 +158,7 @@ fun ChatScreen(model: AppModel, onHome: () -> Unit, onSettings: () -> Unit) {
     var confirmClear by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
     val messages = model.chatMessages
+    val speaker = rememberVoiceSpeaker()
 
     LaunchedEffect(Unit) { model.chatRefreshModels() }
     // Follow the answer as it grows.
@@ -217,7 +218,7 @@ fun ChatScreen(model: AppModel, onHome: () -> Unit, onSettings: () -> Unit) {
                 )
             } else {
                 LazyColumn(state = listState, modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(Gap)) {
-                    items(messages, key = { it.id }) { m -> Bubble(m) }
+                    items(messages, key = { it.id }) { m -> Bubble(m, speaker) }
                 }
             }
         }
@@ -228,6 +229,17 @@ fun ChatScreen(model: AppModel, onHome: () -> Unit, onSettings: () -> Unit) {
                 val r = model.chatSend(text)
                 if (r == null) { text = ""; refusal = null } else refusal = r
             },
+            onDictate = { spoken ->
+                text = if (text.isBlank()) spoken
+                    else if (text.endsWith(" ")) text + spoken
+                    else "$text $spoken"
+                refusal = null
+            },
+        )
+        Text(
+            stringResource(R.string.voice_privacy),
+            Modifier.padding(horizontal = 4.dp, vertical = 2.dp),
+            style = TypeScale.SECONDARY.style(tokens().textDim.c()),
         )
     }
 
@@ -247,7 +259,7 @@ fun ChatScreen(model: AppModel, onHome: () -> Unit, onSettings: () -> Unit) {
 }
 
 @Composable
-private fun Bubble(m: ChatMessage) {
+private fun Bubble(m: ChatMessage, speaker: VoiceSpeaker) {
     if (m.role == ChatRole.USER) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             SelectionContainer {
@@ -268,6 +280,13 @@ private fun Bubble(m: ChatMessage) {
         else if (m.text.isNotEmpty()) SelectionContainer { MarkdownText(m.text) }
         if (m.status == ChatStatus.FAILED) {
             Text(reasonText(m.reason), style = TypeScale.SECONDARY.style(tokens().danger.c()))
+        }
+        if (m.text.isNotEmpty()) {
+            var speaking by remember { mutableStateOf(false) }
+            TextButton(onClick = {
+                if (speaking) { speaker.stop(); speaking = false }
+                else { speaker.speak(m.text); speaking = true }
+            }) { Text(if (speaking) stringResource(R.string.voice_stop) else stringResource(R.string.voice_speak)) }
         }
     }
 }
@@ -328,7 +347,7 @@ private fun styled(spans: List<MdSpan>, codeBackground: androidx.compose.ui.grap
 }
 
 @Composable
-private fun Composer(model: AppModel, text: String, refusal: ChatSession.Refusal?, onText: (String) -> Unit, onSend: () -> Unit) {
+private fun Composer(model: AppModel, text: String, refusal: ChatSession.Refusal?, onText: (String) -> Unit, onSend: () -> Unit, onDictate: (String) -> Unit) {
     val limit = Protocol.CHAT_MAX_TEXT
     val length = text.trim().length
     val t = tokens()
@@ -345,6 +364,7 @@ private fun Composer(model: AppModel, text: String, refusal: ChatSession.Refusal
                     focusedTextColor = t.text.c(), unfocusedTextColor = t.text.c(), cursorColor = t.text.c(),
                 ),
             )
+            VoiceDictateButton(onTranscript = onDictate, enabled = model.chatAvailable)
             if (model.chatBusy) {
                 PillButton(stringResource(R.string.chat_stop), { model.chatCancel() }, Modifier.height(56.dp))
             } else {

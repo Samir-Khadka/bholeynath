@@ -14,7 +14,7 @@ sealed interface IconShape {
     data class Arc(val cx: Double, val cy: Double, val r: Double, val start: Double, val sweep: Double) : IconShape
 }
 
-enum class IconKind { HOME, CHAT, SLIDERS, BACK, SEND, LOCK, SCAN, CHEVRON, CHECK, CLOSE }
+enum class IconKind { HOME, CHAT, SLIDERS, BACK, SEND, LOCK, SCAN, CHEVRON, CHECK, CLOSE, MIC }
 
 object IconSpec {
     const val GRID = 24.0
@@ -47,6 +47,12 @@ object IconSpec {
         IconKind.CHEVRON -> listOf(poly(9.5, 6.0, 15.5, 12.0, 9.5, 18.0))
         IconKind.CHECK -> listOf(poly(5.5, 12.5, 9.7, 16.7, 18.5, 7.5))
         IconKind.CLOSE -> listOf(poly(7.0, 7.0, 17.0, 17.0), poly(17.0, 7.0, 7.0, 17.0))
+        // A microphone: the capsule, the cradle under it, the stand.
+        IconKind.MIC -> listOf(
+            IconShape.RoundRect(9.5, 3.5, 5.0, 10.0, 2.5),
+            IconShape.Arc(12.0, 13.5, 5.5, 0.0, 180.0),
+            poly(12.0, 19.0, 12.0, 21.5),
+        )
     }
 
     /** Every x and y the icon uses, including the extent of circles, rectangles and arcs. */

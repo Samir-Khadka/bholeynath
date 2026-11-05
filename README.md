@@ -35,13 +35,17 @@ Narayan lives in a small island at the top-centre of your screen. It stays out o
 - 🖥️ **Narayan on the desktop** — drag Narayan out of the island and he floats on your desktop, follows your cursor, and comes back where you left him on next launch.
 - ⌨️ **Keyboard shortcuts** — open the chat (`Ctrl+Alt+Space`), jump to a waiting permission (`Ctrl+Alt+A`), bring the session's window forward (`Ctrl+Alt+T`), switch pills, mute, open the wardrobe, send Narayan to the desktop — all customizable in Settings → Shortcuts.
 - 🎭 **A real character** — Narayan is drawn in code: idle breathing, blinks, eyes that follow your mouse, emotes, 29 synthesized sounds, a greeting on launch. Dress him up from the wardrobe; he also dresses for the seasons on his own.
-- 🗣️ **"OK Bholeynath"** — talk to Narayan like Jarvis (voice features are Mac-only in the carried-over code; see below).
+- 🗣️ **"OK Bholeynath"** — talk to Narayan like Jarvis: the wake word on Windows and Mac, push-to-talk on Android and iPhone, spoken answers everywhere. See [Voice assistant](docs/VOICE_ASSISTANT.md).
 - 📅 **Weekly recap** — every Monday morning, a summary of the past week: time coding, sessions, files, lines changed, commands, permissions, top agent and project, busiest day and longest session. Share it as an image, project names optional. All local, no sync.
 - 🌍 **Languages** — the carried-over interface ships 16 languages on Mac and 14 on Windows/Linux. Nepali localization is planned as a separate phase and is not in this build.
 
 ## Hindu theme
 
 Bholeynath wears a complete Hindu theme: a manuscript aesthetic — parchment cards, gold rules, temple-arch headers, Om and mandala ornaments, diya motifs — with deity art shown with reverence on the welcome hero (Shiva, ॐ नमः शिवाय), the greeting blessing (Ganesha, श्री गणेशाय नमः) and festival art (Durga for the Dashain sequence, Shiva for Maha Shivaratri, Lakshmi for Tihar, Saraswati for Basanta Panchami, Krishna for Janmashtami, Hanuman for Hanuman Jayanti). The round-2 portraits (Lakshmi, Saraswati, Krishna, Hanuman) are public-domain paintings sourced from Wikimedia Commons — see `windows/public/deities/CREDITS.md`. The deity art is display art only — Narayan, your assistant, is a separate companion drawn in code, never a depiction of a god. The manuscript texture is CSS/SVG only.
+
+## Voice assistant
+
+Say "OK Bholeynath" on Windows or Mac, tap the microphone on Android or iPhone, and hear the answer spoken back. Voice is on by default where it can be set up safely, and it stays silent until its one-time setup is done. Voice never approves a permission, sends a message, or runs anything destructive — those still need an explicit click. Full per-platform details, setup, and the privacy rules: [docs/VOICE_ASSISTANT.md](docs/VOICE_ASSISTANT.md).
 
 ## Privacy — the rules this fork keeps
 
