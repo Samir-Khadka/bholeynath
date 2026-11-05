@@ -8,7 +8,7 @@ import type { VoiceOutput } from "../../core/flow";
 import type { HubContext } from "../shell";
 import { button, card, divider, label, row, segmented, toggle } from "../ui";
 import { modelsControl } from "./flowsettings";
-import { voiceSetupSteps } from "./voice-setup";
+import { voiceSetupSteps } from "../voice-setup";
 
 const ELEVEN = "elevenlabs-api-key";
 /** Where secrets.rs keeps the keys on this OS (same words as Notch → Chat). */
