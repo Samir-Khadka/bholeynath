@@ -11,6 +11,7 @@ struct HomeView: View {
     @State private var agentsPath: [String] = []
     @State private var servicesPath: [String] = []
     @State private var introDone = false
+    @State private var showVoice = false
     @AppStorage("onboardingDone") private var onboardingDone = false
 
     var body: some View {
@@ -57,6 +58,19 @@ struct HomeView: View {
                 IntroView(ready: link.firstSyncDone) { introDone = true }
                     .transition(.identity)
             }
+        }
+        // Voice: a microphone above the tabs opens the spoken status sheet.
+        .overlay(alignment: .bottomTrailing) {
+            Button { showVoice = true } label: {
+                Image(systemName: "mic.fill")
+                    .padding(14)
+                    .background(.ultraThinMaterial, in: Circle())
+            }
+            .padding(.trailing, 20)
+            .padding(.bottom, 96)
+        }
+        .sheet(isPresented: $showVoice) {
+            VoiceAskView(link: link)
         }
         .onAppear {
             // The first launch opens on the setup guide instead.

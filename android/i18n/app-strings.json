@@ -454,7 +454,11 @@
     "history_export": "Export as text",
     "history_export_header": "Bholeynath · recent decisions",
     "mute_agents": "Mute an agent's notices",
-    "mute_agents_hint": "Finished, failed and limit notices of the agents you pick stay quiet. Requests and questions always come through."
+    "mute_agents_hint": "Finished, failed and limit notices of the agents you pick stay quiet. Requests and questions always come through.",
+    "voice_dictate": "Dictate",
+    "voice_speak": "Read aloud",
+    "voice_stop": "Stop",
+    "voice_privacy": "Your voice goes to the phone speech recognizer to become text. Spoken answers are made on this phone. Voice never sends anything: dictation only fills the box, and you still tap Send."
   },
   "plurals": {
     "widget_n_waiting": {"one": "%1$d waiting", "other": "%1$d waiting"},

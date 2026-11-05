@@ -455,6 +455,10 @@
     <string name="history_export_header">Bholeynath · son kararlar</string>
     <string name="mute_agents">Bir ajanın bildirimlerini sessize al</string>
     <string name="mute_agents_hint">Seçtiğin ajanların tamamlanma, başarısızlık ve sınır bildirimleri sessiz kalır. İstekler ve sorular her zaman iletilir.</string>
+    <string name="voice_dictate">Dikte et</string>
+    <string name="voice_speak">Sesli oku</string>
+    <string name="voice_stop">Durdur</string>
+    <string name="voice_privacy">Sesiniz metne dönüşmesi için telefonun konuşma tanıyıcısına gider. Sesli yanıtlar bu telefonda oluşturulur. Sesli özellik hiçbir şey göndermez: dikte yalnızca kutuyu doldurur, Gönder\'e yine siz dokunursunuz.</string>
     <plurals name="widget_n_waiting">
         <item quantity="one">%1$d öğe bekliyor</item>
         <item quantity="other">%1$d öğe bekliyor</item>

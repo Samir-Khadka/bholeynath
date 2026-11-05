@@ -455,6 +455,10 @@
     <string name="history_export_header">Bholeynath · القرارات الأخيرة</string>
     <string name="mute_agents">كتم إشعارات وكيل</string>
     <string name="mute_agents_hint">تبقى إشعارات الانتهاء والفشل وبلوغ الحد للوكلاء الذين تختارهم صامتة. الطلبات والأسئلة تصلك دائمًا.</string>
+    <string name="voice_dictate">إملاء</string>
+    <string name="voice_speak">اقرأ بصوت عالٍ</string>
+    <string name="voice_stop">إيقاف</string>
+    <string name="voice_privacy">يذهب صوتك إلى أداة التعرف على الكلام في الهاتف ليتحول إلى نص. وتُنشأ الإجابات المنطوقة على هذا الهاتف. ولا يرسل الصوت أي شيء أبدًا: فالإملاء يملأ المربع فقط، وأنت من يضغط «إرسال».</string>
     <plurals name="widget_n_waiting">
         <item quantity="zero">%1$d بالانتظار</item>
         <item quantity="one">%1$d بالانتظار</item>

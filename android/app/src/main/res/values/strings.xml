@@ -455,6 +455,10 @@
     <string name="history_export_header">Bholeynath · recent decisions</string>
     <string name="mute_agents">Mute an agent\'s notices</string>
     <string name="mute_agents_hint">Finished, failed and limit notices of the agents you pick stay quiet. Requests and questions always come through.</string>
+    <string name="voice_dictate">Dictate</string>
+    <string name="voice_speak">Read aloud</string>
+    <string name="voice_stop">Stop</string>
+    <string name="voice_privacy">Your voice goes to the phone speech recognizer to become text. Spoken answers are made on this phone. Voice never sends anything: dictation only fills the box, and you still tap Send.</string>
     <plurals name="widget_n_waiting">
         <item quantity="one">%1$d waiting</item>
         <item quantity="other">%1$d waiting</item>

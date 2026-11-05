@@ -8,6 +8,7 @@ import type { VoiceOutput } from "../../core/flow";
 import type { HubContext } from "../shell";
 import { button, card, divider, label, row, segmented, toggle } from "../ui";
 import { modelsControl } from "./flowsettings";
+import { voiceSetupSteps } from "../voice-setup";
 
 const ELEVEN = "elevenlabs-api-key";
 /** Where secrets.rs keeps the keys on this OS (same words as Notch → Chat). */
@@ -59,6 +60,20 @@ export async function voicePage(page: HTMLElement, ctx: HubContext) {
     main.append(h("div", { class: "hub-warn", text: t("Download the voice model so Bholeynath can hear you.") }));
   }
   page.append(main);
+
+  // First run, in plain language: the three things voice needs, and the
+  // promise that nothing listens until the model and the key are ready.
+  if (!ready || !status.hasClaudeKey) {
+    page.append(label("Set up voice"));
+    page.append(card(
+      ...voiceSetupSteps(ready, status.hasClaudeKey).map((s) =>
+        row(`${s.state === "done" ? "✓" : s.state === "todo" ? "○" : "ⓘ"} ${s.text}`, null)),
+    ));
+    page.append(h("div", {
+      class: "hub-note",
+      text: "Voice stays off until the model and the key are ready: nothing listens before that. Turning the toggle on only arms it for when setup finishes.",
+    }));
+  }
 
   page.append(label(t("Answers")));
   const outputs: [VoiceOutput, string][] = [["system", t("System voice")], ["elevenlabs", "ElevenLabs"], ["off", t("Text only")]];

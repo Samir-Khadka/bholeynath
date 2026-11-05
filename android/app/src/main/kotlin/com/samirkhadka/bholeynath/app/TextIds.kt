@@ -460,6 +460,10 @@ internal object TextIds {
         "history_export_header" to R.string.history_export_header,
         "mute_agents" to R.string.mute_agents,
         "mute_agents_hint" to R.string.mute_agents_hint,
+        "voice_dictate" to R.string.voice_dictate,
+        "voice_speak" to R.string.voice_speak,
+        "voice_stop" to R.string.voice_stop,
+        "voice_privacy" to R.string.voice_privacy,
     )
 
     val plurals: Map<String, Int> = mapOf(

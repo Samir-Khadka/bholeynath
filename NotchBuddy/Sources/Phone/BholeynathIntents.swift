@@ -23,6 +23,28 @@ struct AgentsStatusIntent: AppIntent {
     }
 }
 
+/// Siri: "Ask Bholeynath" — hear what the agents are doing, spoken back.
+/// Read-only, like the agent-status intent: it never sends an instruction
+/// and never approves anything, so it needs no authentication policy.
+struct AskBholeynathIntent: AppIntent {
+    static let title: LocalizedStringResource = "Ask Bholeynath"
+    static var description: IntentDescription {
+        IntentDescription("Hear what your coding agents are doing right now.")
+    }
+
+    @MainActor
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        let link = PhoneLink.shared
+        await link.refresh()
+        let sessions = link.sessions.sortedByUrgency()
+        guard let lead = sessions.first else {
+            return .result(dialog: "All quiet: no agent session on your Mac.")
+        }
+        let summary = sessions.summary ?? "All quiet"
+        return .result(dialog: "\(summary). \(lead.pillName), \(lead.title): \(lead.statusText).")
+    }
+}
+
 struct AskClaudeIntent: AppIntent {
     static let title: LocalizedStringResource = "Ask Claude"
     static var description: IntentDescription {
@@ -66,6 +88,11 @@ struct BholeynathShortcuts: AppShortcutsProvider {
                               "Agent status in \(.applicationName)"],
                     shortTitle: "Agent status",
                     systemImageName: "sparkles")
+        AppShortcut(intent: AskBholeynathIntent(),
+                    phrases: ["Ask \(.applicationName)",
+                              "Ask \(.applicationName) what my agents are doing"],
+                    shortTitle: "Ask Bholeynath",
+                    systemImageName: "mic")
     }
 }
 

@@ -453,7 +453,11 @@
     "history_export": "Exportar como texto",
     "history_export_header": "Bholeynath · decisiones recientes",
     "mute_agents": "Silenciar los avisos de un agente",
-    "mute_agents_hint": "Los avisos de fin, error y límite de los agentes que elijas no suenan. Las solicitudes y las preguntas siempre llegan."
+    "mute_agents_hint": "Los avisos de fin, error y límite de los agentes que elijas no suenan. Las solicitudes y las preguntas siempre llegan.",
+    "voice_dictate": "Dictar",
+    "voice_speak": "Leer en voz alta",
+    "voice_stop": "Detener",
+    "voice_privacy": "Tu voz va al reconocedor de voz del teléfono para convertirse en texto. Las respuestas habladas se generan en este teléfono. La voz nunca envía nada: el dictado solo rellena el cuadro, y tú sigues tocando Enviar."
   },
   "plurals": {
     "widget_n_waiting": {"one": "%1$d en espera", "many": "%1$d en espera", "other": "%1$d en espera"},

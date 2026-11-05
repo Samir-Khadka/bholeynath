@@ -129,7 +129,10 @@ impl Default for Prefs {
             default_style: Style::Natural,
             summary_engine: SummaryEngine::Claude,
             open_at_launch: true,
-            voice: false,
+            // On by default: voice::sync() only starts listening once the
+            // model is downloaded and a Claude key is saved, so a fresh
+            // install stays silent and the hub guides setup instead.
+            voice: true,
             mute_others: true,
             voice_output: "system".into(),
             voice_gender: "female".into(),
