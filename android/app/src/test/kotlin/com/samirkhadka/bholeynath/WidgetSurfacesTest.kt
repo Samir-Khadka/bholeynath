@@ -8,7 +8,7 @@ import org.junit.Test
 
 /** Source guards for the Solo and List widgets (Compose and Android classes only compile in CI), in the style of [GlanceSurfacesTest]. */
 class WidgetSurfacesTest {
-    private val main = "src/main/kotlin/com/bholeynath/android/"
+    private val main = "src/main/kotlin/com/samirkhadka/bholeynath/"
     private fun read(path: String) = File(path).readText()
     private val manifest get() = read("src/main/AndroidManifest.xml")
 
@@ -176,7 +176,7 @@ class WidgetSurfacesTest {
     // ── The debug preview: it must exist in debug builds and nowhere else ──────────────────────────
 
     @Test fun thePreviewReceiverLivesInTheDebugSourceSetOnly() {
-        assertTrue(File("src/debug/kotlin/com/bholeynath/android/app/WidgetPreviewReceiver.kt").exists())
+        assertTrue(File("src/debug/kotlin/com/samirkhadka/bholeynath/app/WidgetPreviewReceiver.kt").exists())
         val debugManifest = read("src/debug/AndroidManifest.xml")
         assertTrue(debugManifest.contains(".app.WidgetPreviewReceiver"))
         assertTrue(debugManifest.contains("com.samirkhadka.bholeynath.debug.WIDGET_STATE"))
@@ -195,7 +195,7 @@ class WidgetSurfacesTest {
     }
 
     @Test fun thePreviewReceiverDocumentsEveryCommand() {
-        val src = read("src/debug/kotlin/com/bholeynath/android/app/WidgetPreviewReceiver.kt")
+        val src = read("src/debug/kotlin/com/samirkhadka/bholeynath/app/WidgetPreviewReceiver.kt")
         for (state in listOf("disconnected", "empty", "working", "waiting", "done", "live")) {
             assertTrue(state, src.contains("--es state $state"))
         }

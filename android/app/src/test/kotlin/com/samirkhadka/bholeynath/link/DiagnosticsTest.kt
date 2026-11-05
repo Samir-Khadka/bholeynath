@@ -133,7 +133,7 @@ class DiagnosticsTest {
     }
 
     @Test fun theSourceNeverPutsThePairingCodeInAResult() {
-        val src = java.io.File("src/main/kotlin/com/bholeynath/android/link/Diagnostics.kt").readText()
+        val src = java.io.File("src/main/kotlin/com/samirkhadka/bholeynath/link/Diagnostics.kt").readText()
         // The token is only ever read to build the hello; no result string interpolates it, and nothing logs.
         assertEquals(1, Regex("""p\.token""").findAll(src).count())
         assertFalse(src.contains("Log.") || src.contains("println"))

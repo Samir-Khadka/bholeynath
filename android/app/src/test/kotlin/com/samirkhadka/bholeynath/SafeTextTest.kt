@@ -92,7 +92,7 @@ class SafeTextTest {
     }
 
     @Test fun noSurfaceThatIsSeenWithoutATapPrintsTheCommand() {
-        val main = "src/main/kotlin/com/bholeynath/android/"
+        val main = "src/main/kotlin/com/samirkhadka/bholeynath/"
         val n = java.io.File(main + "app/Notifications.kt").readText()
         assertFalse(n.replace("SafeText.requestLabel(r.tool, r.command)", "").contains("r.command"))
         assertFalse(n.contains("setSubText(statusText"))

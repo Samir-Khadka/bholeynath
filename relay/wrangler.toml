@@ -1,4 +1,4 @@
-# Coucou relay: forwards Live Activity pushes from the Mac app to Apple (APNs).
+# Bholeynath relay: forwards Live Activity pushes from the Mac app to Apple (APNs).
 # Deploy: see README.md. Secrets (never in git): APNS_KEY, APNS_KEY_ID.
 name = "coucou-relay"
 main = "src/index.ts"

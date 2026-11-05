@@ -16,7 +16,7 @@ import org.junit.Test
 class LightThemeTest {
     private val sets = mapOf("dark" to Tokens.DARK, "light" to Tokens.LIGHT)
     private fun c(a: Long, b: Long) = Palette.contrast(a, b)
-    private fun ui(name: String) = File("src/main/kotlin/com/bholeynath/android/ui/$name").readText()
+    private fun ui(name: String) = File("src/main/kotlin/com/samirkhadka/bholeynath/ui/$name").readText()
 
     @Test fun theChoiceDecidesTheSet() {
         assertTrue(ThemePolicy.dark(ThemeChoice.SYSTEM, systemDark = true))
@@ -75,14 +75,14 @@ class LightThemeTest {
 
     @Test fun onlyTheIslandAndTheCameraStayBlack() {
         // The hero, the sheets and every dialog take their colours from the tokens, so they follow the theme.
-        for (f in File("src/main/kotlin/com/bholeynath/android/ui").listFiles { it.extension == "kt" }!!) {
+        for (f in File("src/main/kotlin/com/samirkhadka/bholeynath/ui").listFiles { it.extension == "kt" }!!) {
             if (f.name == "IslandOverlay.kt" || f.name == "ScanScreen.kt") continue
             val text = f.readText()
             assertFalse("${f.name} hard-codes the island's black", text.contains("IslandSurface."))
             for (colour in listOf("Color.White", "Color.Black", "Color(0x")) {
                 if (!text.contains(colour)) continue
-                // The only ones left are the switch knob, the sheet scrim, the wardrobe tag, the bar's alert dot (the approval colour) and the state colours.
-                assertTrue("${f.name} uses $colour", f.name in setOf("DesignControls.kt", "Sheets.kt", "WardrobeScreen.kt", "BottomBar.kt"))
+                // The only ones left are the switch knob, the sheet scrim, the wardrobe tag, the bar's alert dot (the approval colour), the state colours, and the Shiva frame's gold border in Settings.
+                assertTrue("${f.name} uses $colour", f.name in setOf("DesignControls.kt", "Sheets.kt", "WardrobeScreen.kt", "BottomBar.kt", "SettingsScreens.kt"))
             }
         }
         assertTrue("the island provides the dark tokens", ui("IslandOverlay.kt").contains("LocalTokens provides Tokens.DARK"))
@@ -93,7 +93,7 @@ class LightThemeTest {
         val theme = ui("Theme.kt")
         assertTrue(theme.contains("isSystemInDarkTheme()") && theme.contains("ThemePolicy.dark(theme"))
         assertTrue(theme.contains("dynamicLightColorScheme") && theme.contains("dynamicDarkColorScheme") && theme.contains("dynamicAvailable"))
-        val main = File("src/main/kotlin/com/bholeynath/android/MainActivity.kt").readText()
+        val main = File("src/main/kotlin/com/samirkhadka/bholeynath/MainActivity.kt").readText()
         assertTrue(main.contains("BholeynathTheme(model.settings.theme, model.settings.dynamicColour)"))
         // Dark icons on a light page, light icons on the camera.
         assertTrue(main.contains("isAppearanceLightStatusBars = lightPage") && main.contains("screen != Screen.SCAN"))
@@ -109,6 +109,6 @@ class LightThemeTest {
     @Test fun narayanAndTheStateColoursDoNotDependOnTheTheme() {
         val home = ui("HomePanel.kt")
         assertTrue(home.contains("NarayanConst.STATES[state]?.color?.let(::rgbColor)"))
-        assertFalse(File("src/main/kotlin/com/bholeynath/android/narayan/NarayanPainter.kt").readText().contains("LocalTokens"))
+        assertFalse(File("src/main/kotlin/com/samirkhadka/bholeynath/narayan/NarayanPainter.kt").readText().contains("LocalTokens"))
     }
 }

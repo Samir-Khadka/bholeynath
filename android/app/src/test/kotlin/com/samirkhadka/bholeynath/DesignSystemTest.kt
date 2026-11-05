@@ -10,7 +10,7 @@ import org.junit.Test
  * these read the sources): accessible controls, colours only from the tokens, no icon library.
  */
 class DesignSystemTest {
-    private fun src(name: String) = File("src/main/kotlin/com/bholeynath/android/$name").readText()
+    private fun src(name: String) = File("src/main/kotlin/com/samirkhadka/bholeynath/$name").readText()
     private val system get() = src("ui/DesignSystem.kt")
     private val controls get() = src("ui/DesignControls.kt")
     private val icons get() = src("ui/DesignIcons.kt")

@@ -49,7 +49,7 @@ class PendingLaunchTest {
         assertEquals(PendingLaunch.Request("new", false), launch.take())
     }
 
-    private val main = "src/main/kotlin/com/bholeynath/android/"
+    private val main = "src/main/kotlin/com/samirkhadka/bholeynath/"
     private fun manifest() = File("src/main/AndroidManifest.xml").readText()
 
     @Test fun theExportedActivityNeverReadsTheRequestFromItsIntent() {
@@ -166,7 +166,7 @@ class PendingLaunchTest {
     }
 
     @Test fun theScreenSlotOnlyHoldsAValueOfTheClosedList() {
-        val src = File("src/main/kotlin/com/bholeynath/android/core/PendingLaunch.kt").readText()
+        val src = File("src/main/kotlin/com/samirkhadka/bholeynath/core/PendingLaunch.kt").readText()
         assertTrue(src.contains("fun requestScreen(which: LaunchScreen?)"))
         assertTrue(src.contains("fun takeScreen(): LaunchScreen?"))
         assertTrue(src.contains("private var screen: LaunchScreen?"))

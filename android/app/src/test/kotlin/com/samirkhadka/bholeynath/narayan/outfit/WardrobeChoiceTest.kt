@@ -29,7 +29,7 @@ class WardrobeChoiceTest {
     }
 
     // The screens cannot be drawn in a JVM test, so these read the sources.
-    private fun src(name: String) = File("src/main/kotlin/com/bholeynath/android/$name").readText()
+    private fun src(name: String) = File("src/main/kotlin/com/samirkhadka/bholeynath/$name").readText()
 
     @Test fun theWardrobeIsOneTapFromSettingsAndGoesBackToSettings() {
         assertTrue(src("ui/SettingsScreens.kt").contains("onWardrobe"))

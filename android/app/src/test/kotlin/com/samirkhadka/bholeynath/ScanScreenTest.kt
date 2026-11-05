@@ -8,7 +8,7 @@ import org.junit.Test
 /** Source-level guards for scanning the pairing code (the camera and Compose cannot run in a JVM test). */
 class ScanScreenTest {
     private fun file(path: String) = File(path).readText()
-    private fun src(name: String) = file("src/main/kotlin/com/bholeynath/android/$name")
+    private fun src(name: String) = file("src/main/kotlin/com/samirkhadka/bholeynath/$name")
     private val kotlinFiles get() = File("src/main/kotlin").walkTopDown().filter { it.isFile && it.extension == "kt" }.toList()
 
     @Test fun theCameraIsReleasedWhenTheScreenIsLeftAndAfterAnAcceptedCode() {

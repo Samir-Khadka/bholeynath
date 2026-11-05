@@ -183,10 +183,10 @@ class WidgetPreviewTest {
             assertTrue("$state glow colour", glow.contains(hex(tone)))
             assertTrue("$state glow fades out", glow.contains("""android:type="radial"""") && Regex("""android:color="#00${hex(tone)}"""").containsMatchIn(glow))
             assertTrue(narayan.indexOf("preview_glow_$state") in 0 until narayan.indexOf("preview_face_$state"))
-            // The body, its light gradient, the pink cheeks and two dark eyes.
-            assertTrue(face.contains("#EDEDEF") && face.contains("#C4C5CA"))
+            // The body, its dark indigo gradient, the pink cheeks and two gold eyes.
+            assertTrue(face.contains("#3C366F") && face.contains("#17153D"))
             assertTrue(face.contains("#59FF7896"))
-            assertTrue(state, Regex("""#1A1412""").findAll(face).count() >= 2)
+            assertTrue(state, Regex("""#E8B84B""").findAll(face).count() >= 2)
             for (d in listOf(face, glow)) {
                 assertTrue(d.contains("""android:viewportWidth="120"""") && d.contains("""android:viewportHeight="120""""))
             }

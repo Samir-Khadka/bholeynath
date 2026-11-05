@@ -78,11 +78,11 @@ class ReduceMotionTest {
     }
 
     @Test fun settingsOffersTheChoice() {
-        val ui = File("src/main/kotlin/com/bholeynath/android/ui/SettingsScreens.kt").readText()
+        val ui = File("src/main/kotlin/com/samirkhadka/bholeynath/ui/SettingsScreens.kt").readText()
         assertTrue(ui.contains("MotionChoice.REDUCE") && ui.contains("R.string.settings_motion"))
         // The island and the Narayan view both ask the one policy.
-        assertTrue(File("src/main/kotlin/com/bholeynath/android/ui/IslandOverlay.kt").readText().contains("MotionPolicy.reduced"))
-        assertTrue(File("src/main/kotlin/com/bholeynath/android/ui/DesignSystem.kt").readText().contains("MotionPolicy.reduced"))
-        assertTrue(File("src/main/kotlin/com/bholeynath/android/narayan/NarayanView.kt").readText().contains("engine.reduceMotion"))
+        assertTrue(File("src/main/kotlin/com/samirkhadka/bholeynath/ui/IslandOverlay.kt").readText().contains("MotionPolicy.reduced"))
+        assertTrue(File("src/main/kotlin/com/samirkhadka/bholeynath/ui/DesignSystem.kt").readText().contains("MotionPolicy.reduced"))
+        assertTrue(File("src/main/kotlin/com/samirkhadka/bholeynath/narayan/NarayanView.kt").readText().contains("engine.reduceMotion"))
     }
 }

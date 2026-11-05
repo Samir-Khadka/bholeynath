@@ -16,7 +16,7 @@ import org.junit.Test
 /** One palette for every Widget: the same state gives the same colour everywhere, nothing picks a colour of its own, and text stays readable. */
 class WidgetPaletteTest {
     private val res = "src/main/res/"
-    private val main = "src/main/kotlin/com/bholeynath/android/"
+    private val main = "src/main/kotlin/com/samirkhadka/bholeynath/"
     private fun read(p: String) = File(p).readText()
 
     // ── One state, one colour, the most urgent agent wins ───────────────────────────────────────────
