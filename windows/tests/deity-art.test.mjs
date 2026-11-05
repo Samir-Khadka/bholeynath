@@ -1,5 +1,6 @@
-// Festival → deity art map (src/hub/deity-art.ts): round-1 festivals resolve
-// to shipped portraits, round-2 and unknown keys fall back to the diya ornament.
+// Festival → deity art map (src/hub/deity-art.ts): round-1 and round-2
+// festivals resolve to shipped portraits; unknown keys fall back to the
+// diya ornament.
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -12,7 +13,6 @@ const here = dirname(fileURLToPath(import.meta.url));
 const deityFile = (image) => join(here, "..", "public", image);
 
 const DASHAIN = ["ghatasthapana", "phulpati", "maha_ashtami", "maha_navami", "vijaya_dashami", "dashain_holiday"];
-const ROUND_2 = ["laxmi_puja", "tihar", "basanta_panchami", "janmashtami", "hanuman_jayanti"];
 
 test("Dashain sequence resolves to the shipped Durga portrait", () => {
   for (const key of DASHAIN) {
@@ -31,12 +31,20 @@ test("Maha Shivaratri resolves to the shipped Shiva portrait", () => {
   assert.ok(existsSync(deityFile(art.image)));
 });
 
-test("round-2 festivals resolve to the diya fallback, never invented art", () => {
-  for (const key of ROUND_2) {
+test("round-2 festivals resolve to the shipped public-domain portraits", () => {
+  const EXPECTED = {
+    laxmi_puja: ["lakshmi", "deities/lakshmi.jpg", "ॐ श्रीं महालक्ष्म्यै नमः"],
+    tihar: ["lakshmi", "deities/lakshmi.jpg", "ॐ श्रीं महालक्ष्म्यै नमः"],
+    basanta_panchami: ["saraswati", "deities/saraswati.jpg", "ॐ ऐं सरस्वत्यै नमः"],
+    janmashtami: ["krishna", "deities/krishna.jpg", "ॐ नमो भगवते वासुदेवाय"],
+    hanuman_jayanti: ["hanuman", "deities/hanuman.jpg", "ॐ हनुमते नमः"],
+  };
+  for (const [key, [deity, image, mantra]] of Object.entries(EXPECTED)) {
     const art = deityArtForFestival(key);
-    assert.equal(art.image, null, `${key} must not claim art that does not exist`);
-    assert.equal(art.fallback, "diya");
-    assert.equal(art.mantra, null);
+    assert.equal(art.deity, deity);
+    assert.equal(art.image, image, `${key} must resolve to its shipped portrait`);
+    assert.equal(art.mantra, mantra);
+    assert.ok(existsSync(deityFile(art.image)), `missing shipped art for ${key}: ${art.image}`);
   }
 });
 

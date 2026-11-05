@@ -41,7 +41,7 @@ Narayan lives in a small island at the top-centre of your screen. It stays out o
 
 ## Hindu theme
 
-Bholeynath wears a complete Hindu theme: a manuscript aesthetic — parchment cards, gold rules, temple-arch headers, Om and mandala ornaments, diya motifs — with deity art shown with reverence on the welcome hero (Shiva, ॐ नमः शिवाय), the greeting blessing (Ganesha, श्री गणेशाय नमः) and festival art (Durga for the Dashain sequence, Shiva for Maha Shivaratri). Portraits for Lakshmi, Saraswati, Krishna and Hanuman, and a real parchment texture, are planned for round 2; until then those festivals fall back to a diya ornament. The deity art is display art only — Narayan, your assistant, is a separate companion drawn in code, never a depiction of a god. The manuscript texture is CSS/SVG only.
+Bholeynath wears a complete Hindu theme: a manuscript aesthetic — parchment cards, gold rules, temple-arch headers, Om and mandala ornaments, diya motifs — with deity art shown with reverence on the welcome hero (Shiva, ॐ नमः शिवाय), the greeting blessing (Ganesha, श्री गणेशाय नमः) and festival art (Durga for the Dashain sequence, Shiva for Maha Shivaratri, Lakshmi for Tihar, Saraswati for Basanta Panchami, Krishna for Janmashtami, Hanuman for Hanuman Jayanti). The round-2 portraits (Lakshmi, Saraswati, Krishna, Hanuman) are public-domain paintings sourced from Wikimedia Commons — see `windows/public/deities/CREDITS.md`. The deity art is display art only — Narayan, your assistant, is a separate companion drawn in code, never a depiction of a god. The manuscript texture is CSS/SVG only.
 
 ## Privacy — the rules this fork keeps
 

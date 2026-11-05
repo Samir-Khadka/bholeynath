@@ -5,7 +5,9 @@
 // the greeting blessing already show the round-1 art in real surfaces, and
 // this map is what a future festival view should read. Do not invent art:
 // entries whose portrait has not been made yet resolve to the diya ornament
-// fallback (round 2: Lakshmi, Saraswati, Krishna, Hanuman).
+// fallback. Round 2 (Lakshmi, Saraswati, Krishna, Hanuman) is shipped:
+// public-domain paintings sourced from Wikimedia Commons (see
+// windows/public/deities/CREDITS.md for provenance).
 //
 // Reverence rule: deity art is display art — framed, captioned, reverent.
 // Nothing in this module is ever wired to a poke, drag or reaction handler,
@@ -34,11 +36,18 @@ interface Portrait {
   mantra: string | null;
 }
 
-/** Portraits actually shipped in windows/public/deities/ (round 1). */
+/** Portraits actually shipped in windows/public/deities/ (rounds 1–2).
+ *  Round 1 (shiva, ganesha, durga) is original art made for Bholeynath;
+ *  round 2 (lakshmi, saraswati, krishna, hanuman) is public-domain art
+ *  from Wikimedia Commons — see windows/public/deities/CREDITS.md. */
 export const DEITY_PORTRAITS: Record<string, Portrait> = {
   shiva: { image: "deities/shiva-hero.jpg", caption: "Shiva", mantra: "ॐ नमः शिवाय" },
   ganesha: { image: "deities/ganesha.jpg", caption: "Ganesha", mantra: "श्री गणेशाय नमः" },
   durga: { image: "deities/durga.jpg", caption: "Durga", mantra: null },
+  lakshmi: { image: "deities/lakshmi.jpg", caption: "Lakshmi", mantra: "ॐ श्रीं महालक्ष्म्यै नमः" },
+  saraswati: { image: "deities/saraswati.jpg", caption: "Saraswati", mantra: "ॐ ऐं सरस्वत्यै नमः" },
+  krishna: { image: "deities/krishna.jpg", caption: "Krishna", mantra: "ॐ नमो भगवते वासुदेवाय" },
+  hanuman: { image: "deities/hanuman.jpg", caption: "Hanuman", mantra: "ॐ हनुमते नमः" },
 };
 
 /** Festival key → deity. Keys follow the Nepali festival names used by the
@@ -52,7 +61,7 @@ export const FESTIVAL_DEITY: Record<string, string> = {
   vijaya_dashami: "durga",
   dashain_holiday: "durga",
   maha_shivaratri: "shiva",
-  // Round 2 — structure only, portraits not made yet → diya fallback:
+  // Round 2 — portraits shipped (public-domain art, see CREDITS.md):
   laxmi_puja: "lakshmi",
   tihar: "lakshmi",
   kag_tihar: "lakshmi",
@@ -65,13 +74,11 @@ export const FESTIVAL_DEITY: Record<string, string> = {
   hanuman_jayanti: "hanuman",
 };
 
-/** Display names for deities whose portrait is not made yet. */
-const PENDING_NAMES: Record<string, string> = {
-  lakshmi: "Lakshmi",
-  saraswati: "Saraswati",
-  krishna: "Krishna",
-  hanuman: "Hanuman",
-};
+/** Display names for deities whose portrait is not made yet.
+ *  Empty since round 2: every mapped deity now has a shipped portrait.
+ *  Kept so a future round (e.g. Parvati) can add entries without changing
+ *  the resolver below. */
+const PENDING_NAMES: Record<string, string> = {};
 
 /** Resolve a festival key to its display art (or the diya fallback). */
 export function deityArtForFestival(key: string): DeityArtEntry {
