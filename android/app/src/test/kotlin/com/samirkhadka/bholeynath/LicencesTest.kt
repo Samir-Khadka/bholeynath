@@ -13,7 +13,7 @@ import org.junit.Test
 /** Settings > About > Licences: the texts that ship are the real ones, every library in the build is covered, and the screen is reachable. */
 class LicencesTest {
     private fun asset(name: String) = File("src/main/assets/licenses/$name").readText()
-    private fun src(name: String) = File("src/main/kotlin/com/bholeynath/android/$name").readText()
+    private fun src(name: String) = File("src/main/kotlin/com/samirkhadka/bholeynath/$name").readText()
 
     @Test fun theMitTextIsTheRepositorysLicenceFileWord_for_word() {
         assertEquals(ReferenceFiles.file("LICENSE").readText(), asset("MIT.txt"))

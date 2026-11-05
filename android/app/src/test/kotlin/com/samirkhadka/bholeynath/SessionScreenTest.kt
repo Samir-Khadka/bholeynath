@@ -7,7 +7,7 @@ import org.junit.Test
 
 /** Source-level guards for the session detail screen (Compose cannot be rendered in a JVM test). */
 class SessionScreenTest {
-    private fun src(name: String) = File("src/main/kotlin/com/bholeynath/android/$name").readText()
+    private fun src(name: String) = File("src/main/kotlin/com/samirkhadka/bholeynath/$name").readText()
     private val strings get() = File("src/main/res/values/strings.xml").readText()
 
     @Test fun theCardOpensTheDetailsOnlyWhenTheyExist() {

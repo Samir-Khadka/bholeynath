@@ -43,13 +43,13 @@ class RecapTextTest {
     }
 
     @Test fun theCardIsReadOnlyAndHeldInMemory() {
-        val src = File("src/main/kotlin/com/bholeynath/android/ui/RecapPanel.kt").readText()
+        val src = File("src/main/kotlin/com/samirkhadka/bholeynath/ui/RecapPanel.kt").readText()
         assertFalse(src.contains("clickable") || src.contains("onClick"))
-        val model = File("src/main/kotlin/com/bholeynath/android/app/AppModel.kt").readText()
+        val model = File("src/main/kotlin/com/samirkhadka/bholeynath/app/AppModel.kt").readText()
         assertTrue(model.contains("var recap by mutableStateOf"))
         assertTrue(model.contains("if (Protocol.CAP_RECAP !in caps) recap = null"))
         // Never written anywhere.
         assertFalse(model.substringAfter("override fun onRecap").substringBefore("}").contains("store"))
-        assertTrue(File("src/main/kotlin/com/bholeynath/android/MainActivity.kt").readText().contains("RecapPanel(model.recap)"))
+        assertTrue(File("src/main/kotlin/com/samirkhadka/bholeynath/MainActivity.kt").readText().contains("RecapPanel(model.recap)"))
     }
 }

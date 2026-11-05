@@ -12,7 +12,7 @@ import org.junit.Test
  * none approves, denies or sends anything, and each has its own request code, a name and a content description.
  */
 class WidgetButtonsTest {
-    private val main = "src/main/kotlin/com/bholeynath/android/"
+    private val main = "src/main/kotlin/com/samirkhadka/bholeynath/"
     private val res = "src/main/res/"
     private fun read(path: String) = File(path).readText()
     private val strings: Map<String, String> =
