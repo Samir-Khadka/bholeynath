@@ -16,6 +16,9 @@ pub fn normalize(text: &str) -> String {
             'ù' | 'ú' | 'û' | 'ü' => 'u',
             'ÿ' | 'ý' => 'y',
             'ñ' => 'n',
+            // The danda is sentence punctuation, like a full stop — dropping it
+            // lets "ओके भोलेनाथ।" match the wake phrase.
+            '।' | '॥' => ' ',
             c if ('\u{0900}'..='\u{097F}').contains(&c) => c,
             c if c.is_alphanumeric() => c,
             _ => ' ',
