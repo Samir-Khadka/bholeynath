@@ -132,7 +132,7 @@ jobs:
         working-directory: windows
         run: cargo build --release -p bholeynath-hook
       - name: Restore executable bits lost in snapshot pushes
-        run: chmod +x android/relay/tools/e2e.sh
+        run: chmod +x android/relay/tools/e2e.sh android/gradlew
       - name: End to end through the Worker (workerd)
         env: { WRANGLER_SEND_METRICS: "false" }
         run: android/relay/tools/e2e.sh worker
