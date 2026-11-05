@@ -4,6 +4,7 @@
 // its coloured band. Port of FlowHub.swift.
 
 import "./hub.css";
+import "../theme.css";
 import { h, clear } from "../views/dom";
 import { t, onLanguageChange } from "../i18n/i18n";
 import { onEvent } from "../core/bridge";
@@ -196,9 +197,23 @@ export async function startHub(root: HTMLElement, opts: HubOptions) {
   }
 
   // ── The sidebar ──
+  // Welcome hero (Hindu theme, display only): Shiva, framed and captioned, above
+  // the brand row. The image has no handlers and is not draggable — deity art is
+  // never a poke target or a toy. Narayan, the companion canvas below it, is
+  // untouched and stays exactly as he is.
   const side = h("nav", { class: "hub-side" });
   const logo = h("canvas", {});
-  side.append(h("div", { class: "hub-brand" }, logo, h("span", { text: "Bholeynath" })));
+  const brandHero = h("div", { class: "hub-brand-hero" },
+    h("figure", { class: "deity-frame" },
+      h("img", {
+        class: "deity-img", src: "deities/shiva-hero.jpg",
+        alt: "Shiva in meditation on Mount Kailash", draggable: "false",
+      }),
+      h("figcaption", { class: "deity-caption", text: "ॐ नमः शिवाय" }),
+    ),
+    h("div", { class: "hub-brand" }, logo, h("span", { text: "Bholeynath" })),
+  );
+  side.append(brandHero);
   liveNarayan(logo as HTMLCanvasElement);
 
   // Settings search field

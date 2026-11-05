@@ -1,0 +1,192 @@
+/* Hindu manuscript theme for Bholeynath (Windows) — shared tokens and ornaments.
+   Imported by the island (main.ts), the hub window (hub/shell.ts) and the pill
+   window (pill/main.ts), so every window shares one palette. Parchment is a
+   background for display surfaces only: small body text stays on dark cards.
+   All ornaments below are drawn here (SVG data URIs); no artwork is copied in.
+   The parchment texture is CSS/SVG only — the generated texture file came out
+   blank and is deliberately not used. */
+
+:root {
+  --saffron: #ff9933;
+  --gold: #d4af37;
+  --gold-soft: #e8c96a;
+  --indigo-deep: #1a1446;
+  --maroon: #7b1e1e;
+  --ivory: #fff8e7;
+  --parchment: #f5ead0;
+  --parchment-deep: #ead9b8;
+  --marigold: #ffb800;
+  --ink-parchment: #3b2314;
+
+  /* Devanagari-first for display headings; Latin falls through to system UI. */
+  --font-display: "Nirmala UI", "Noto Sans Devanagari", "Mangal", system-ui,
+    "Segoe UI Variable Text", "Segoe UI", sans-serif;
+}
+
+.theme-display {
+  font-family: var(--font-display);
+}
+
+/* ── Parchment card (display surfaces: hero frames, about, blessings) ──────── */
+/* Dark ink on ivory keeps it legible; never put small body text on parchment. */
+
+.parchment-card {
+  position: relative;
+  background:
+    linear-gradient(160deg, var(--ivory) 0%, var(--parchment) 55%, var(--parchment-deep) 100%);
+  color: var(--ink-parchment);
+  border: 1px solid var(--gold);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.parchment-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27160%27%20height%3D%27160%27%3E%3Cfilter%20id%3D%27n%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%270.9%27%20numOctaves%3D%272%27%2F%3E%3CfeColorMatrix%20type%3D%27saturate%27%20values%3D%270%27%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%27160%27%20height%3D%27160%27%20filter%3D%27url%28%23n%29%27%20opacity%3D%270.55%27%2F%3E%3C%2Fsvg%3E");
+  background-size: 160px 160px;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+/* ── Gold double border (frames, hero images, blessing cards) ─────────────── */
+
+.gold-double-border {
+  border: 3px double var(--gold);
+}
+
+/* ── Temple-arch section header: gold rules either side of a centred title ── */
+
+.temple-arch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  color: var(--gold-soft);
+  text-align: center;
+}
+
+.temple-arch::before,
+.temple-arch::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+/* ── Om motif: a small gold ring holding ॐ ─────────────────────────────────── */
+
+.om-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  color: var(--gold-soft);
+  font-family: var(--font-display);
+  font-size: 17px;
+  line-height: 1;
+}
+
+/* ── Mandala corner ornament (decorative only, never interactive) ─────────── */
+
+.mandala-corner {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 96px;
+  height: 96px;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23D4AF37%27%20stroke-width%3D%271%27%3E%3Ccircle%20cx%3D%2750%27%20cy%3D%2750%27%20r%3D%2746%27%2F%3E%3Ccircle%20cx%3D%2750%27%20cy%3D%2750%27%20r%3D%2734%27%2F%3E%3Ccircle%20cx%3D%2750%27%20cy%3D%2750%27%20r%3D%2722%27%2F%3E%3Ccircle%20cx%3D%2750%27%20cy%3D%2750%27%20r%3D%279%27%2F%3E%3Cg%3E%3Cellipse%20cx%3D%2750%27%20cy%3D%2720%27%20rx%3D%277%27%20ry%3D%2713%27%2F%3E%3Cellipse%20cx%3D%2750%27%20cy%3D%2720%27%20rx%3D%277%27%20ry%3D%2713%27%20transform%3D%27rotate%2845%2050%2050%29%27%2F%3E%3Cellipse%20cx%3D%2750%27%20cy%3D%2720%27%20rx%3D%277%27%20ry%3D%2713%27%20transform%3D%27rotate%2890%2050%2050%29%27%2F%3E%3Cellipse%20cx%3D%2750%27%20cy%3D%2720%27%20rx%3D%277%27%20ry%3D%2713%27%20transform%3D%27rotate%28135%2050%2050%29%27%2F%3E%3Cellipse%20cx%3D%2750%27%20cy%3D%2720%27%20rx%3D%277%27%20ry%3D%2713%27%20transform%3D%27rotate%28180%2050%2050%29%27%2F%3E%3Cellipse%20cx%3D%2750%27%20cy%3D%2720%27%20rx%3D%277%27%20ry%3D%2713%27%20transform%3D%27rotate%28225%2050%2050%29%27%2F%3E%3Cellipse%20cx%3D%2750%27%20cy%3D%2720%27%20rx%3D%277%27%20ry%3D%2713%27%20transform%3D%27rotate%28270%2050%2050%29%27%2F%3E%3Cellipse%20cx%3D%2750%27%20cy%3D%2720%27%20rx%3D%277%27%20ry%3D%2713%27%20transform%3D%27rotate%28315%2050%2050%29%27%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Ccircle%20cx%3D%2750%27%20cy%3D%2750%27%20r%3D%273%27%20fill%3D%27%23D4AF37%27%2F%3E%3C%2Fsvg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* ── Diya ornament (decorative only; the fallback for festivals with no art) ─ */
+
+.diya-ornament {
+  width: 64px;
+  height: 64px;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Cpath%20d%3D%27M32%204%20C39%2015%2043%2021%2043%2029%20A11%2011%200%200%201%2021%2029%20C21%2021%2025%2014%2032%204%20Z%27%20fill%3D%27%23FFB800%27%20stroke%3D%27%23FF9933%27%20stroke-width%3D%271.5%27%2F%3E%3Cpath%20d%3D%27M10%2033%20Q32%2047%2054%2033%20L49%2044%20Q32%2055%2015%2044%20Z%27%20fill%3D%27%237B1E1E%27%2F%3E%3Crect%20x%3D%2726%27%20y%3D%2755%27%20width%3D%2712%27%20height%3D%274%27%20rx%3D%272%27%20fill%3D%27%23D4AF37%27%2F%3E%3C%2Fsvg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;
+}
+
+/* ── Gold-ruled divider ────────────────────────────────────────────────────── */
+
+.theme-divider {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+/* ── Framed deity art (display only: no handlers, not draggable, not a toy) ── */
+
+.deity-frame {
+  position: relative;
+  margin: 0;
+  border: 3px double var(--gold);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--indigo-deep);
+  user-select: none;
+}
+
+.deity-frame .deity-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: center 22%;
+  pointer-events: none;
+}
+
+.deity-frame .deity-caption {
+  padding: 6px 8px 7px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--gold-soft);
+  background: linear-gradient(180deg, rgba(26, 20, 70, 0.25), var(--indigo-deep));
+}
+
+.theme-mantra {
+  text-align: center;
+  font-family: var(--font-display);
+  color: var(--gold-soft);
+  letter-spacing: 0.02em;
+}
+
+/* ── Hub sidebar welcome hero ─────────────────────────────────────────────── */
+
+.hub-brand-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 8px 12px;
+}
+
+.hub-brand-hero .deity-frame .deity-img {
+  aspect-ratio: 16 / 9;
+}
+
+/* ── Theme accents across windows ─────────────────────────────────────────── */
+/* Hub group headings take gold; hub-page section titles take the display font
+   with a gold rule; island/chat cards keep their dark card but gain a faint
+   gold inner hairline so the palette reads in every window. */
+
+.hub-page h2 {
+  font-family: var(--font-display);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.45);
+  padding-bottom: 6px;
+}
+
+.view .card {
+  box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.12);
+}

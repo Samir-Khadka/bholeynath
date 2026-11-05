@@ -1080,6 +1080,17 @@ function generalSection(): HTMLElement {
     "section",
     {},
     h("h2", {}, h("span", { text: t("General") })),
+    // About Bholeynath (Hindu theme, display only): manuscript card with the
+    // blessing line. Parchment here carries dark ink at display sizes only;
+    // small body text elsewhere stays on dark cards. No handlers on this card.
+    h("div", { class: "parchment-card", style: "padding:14px 16px;margin-bottom:12px" },
+      h("div", { class: "mandala-corner" }),
+      h("div", { class: "temple-arch", style: "color:var(--maroon)" },
+        h("span", { text: "About Bholeynath" })),
+      h("div", { class: "theme-mantra", style: "color:var(--ink-parchment);font-size:18px;margin:8px 0 4px", text: "सर्वे भवन्तु सुखिनः" }),
+      h("hr", { class: "theme-divider" }),
+      h("div", { style: "color:var(--ink-parchment);margin-top:8px", text: "Bholeynath wears a Hindu manuscript theme — parchment cards, gold rules and temple arches. The deity art on welcome, festival and about screens is shown with reverence; Narayan, your assistant, is a separate companion drawn in code." }),
+    ),
     h("div", { class: "row" },
       h("label", { text: t("Sound") }),
       toggle(settings.soundEnabled, (v) => { settings.soundEnabled = v; void save(); }),

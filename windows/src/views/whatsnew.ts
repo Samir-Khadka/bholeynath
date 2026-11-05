@@ -62,6 +62,21 @@ export function buildWhatsNew(): ViewHost {
       ));
     }
     const page = releasePage(Updates.status.platform, release.version);
+    // Greeting blessing (Hindu theme, display only): the app has no dedicated
+    // first-run screen, and this view is its once-per-version greeting surface,
+    // so a new version opens under Ganesha, the blessing of beginnings. The
+    // image has no handlers and is not draggable — deity art is never a poke
+    // target or a toy.
+    stack.append(
+      h("figure", { class: "deity-frame" },
+        h("img", {
+          class: "deity-img", src: "deities/ganesha.jpg",
+          alt: "Ganesha with modaks", draggable: "false",
+        }),
+        h("figcaption", { class: "deity-caption", text: "श्री गणेशाय नमः" }),
+      ),
+      h("div", { class: "theme-mantra", text: "A new beginning" }),
+    );
     stack.append(
       h("div", { class: "title one-line", text: t("You're on Bholeynath {version}", { version: release.version }) }),
       grid,

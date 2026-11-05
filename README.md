@@ -13,6 +13,10 @@ Narayan, your assistant, lives at the top of your screen. Approve permissions, w
 ![Rust](https://img.shields.io/badge/Rust-backend-000?logo=rust)
 ![Code: MIT](https://img.shields.io/badge/code-MIT-green)
 
+<img src="windows/public/deities/shiva-hero.jpg" width="320" alt="Shiva in meditation on Mount Kailash">
+
+ॐ नमः शिवाय
+
 </div>
 
 ---
@@ -34,6 +38,10 @@ Narayan lives in a small island at the top-centre of your screen. It stays out o
 - 🗣️ **"OK Bholeynath"** — talk to Narayan like Jarvis (voice features are Mac-only in the carried-over code; see below).
 - 📅 **Weekly recap** — every Monday morning, a summary of the past week: time coding, sessions, files, lines changed, commands, permissions, top agent and project, busiest day and longest session. Share it as an image, project names optional. All local, no sync.
 - 🌍 **Languages** — the carried-over interface ships 16 languages on Mac and 14 on Windows/Linux. Nepali localization is planned as a separate phase and is not in this build.
+
+## Hindu theme
+
+Bholeynath wears a complete Hindu theme: a manuscript aesthetic — parchment cards, gold rules, temple-arch headers, Om and mandala ornaments, diya motifs — with deity art shown with reverence on the welcome hero (Shiva, ॐ नमः शिवाय), the greeting blessing (Ganesha, श्री गणेशाय नमः) and festival art (Durga for the Dashain sequence, Shiva for Maha Shivaratri). Portraits for Lakshmi, Saraswati, Krishna and Hanuman, and a real parchment texture, are planned for round 2; until then those festivals fall back to a diya ornament. The deity art is display art only — Narayan, your assistant, is a separate companion drawn in code, never a depiction of a god. The manuscript texture is CSS/SVG only.
 
 ## Privacy — the rules this fork keeps
 

@@ -11,7 +11,17 @@ Approve Claude Code permissions, watch your session work, drop a file, chat with
 ![Rust](https://img.shields.io/badge/Rust-backend-000?logo=rust)
 ![Code: MIT](https://img.shields.io/badge/code-MIT-green)
 
+<img src="public/deities/shiva-hero.jpg" width="320" alt="Shiva in meditation on Mount Kailash">
+
+ॐ नमः शिवाय
+
 </div>
+
+---
+
+## Hindu theme
+
+Bholeynath wears a complete Hindu theme: a manuscript aesthetic — parchment cards, gold rules, temple-arch headers, Om and mandala ornaments, diya motifs — with deity art shown with reverence on the hub welcome hero (Shiva, ॐ नमः शिवाय), the greeting blessing (Ganesha, श्री गणेशाय नमः) and festival art (Durga for the Dashain sequence, Shiva for Maha Shivaratri). Portraits for Lakshmi, Saraswati, Krishna and Hanuman, and a real parchment texture, are planned for round 2; until then those festivals fall back to a diya ornament. The deity art is display art only — Narayan, your assistant, is a separate companion drawn in code, never a depiction of a god. The manuscript texture is CSS/SVG only.
 
 ---
 

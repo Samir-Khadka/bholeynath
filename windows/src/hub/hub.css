@@ -233,7 +233,7 @@ body.hub-window {
   font: 700 10.5px var(--font);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--hub-muted);
+  color: var(--gold-soft, #e8c96a);
   padding: 12px 10px 6px;
 }
 
