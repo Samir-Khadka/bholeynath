@@ -455,6 +455,10 @@
     <string name="history_export_header">Bholeynath · décisions récentes</string>
     <string name="mute_agents">Rendre muet un agent</string>
     <string name="mute_agents_hint">Les notices de fin, d\'échec et de limite des agents choisis restent silencieuses. Les demandes et les questions arrivent toujours.</string>
+    <string name="voice_dictate">Dicter</string>
+    <string name="voice_speak">Lire à voix haute</string>
+    <string name="voice_stop">Arrêter</string>
+    <string name="voice_privacy">Votre voix est transmise au système de reconnaissance vocale du téléphone pour devenir du texte. Les réponses parlées sont produites sur ce téléphone. La voix n\'envoie jamais rien : la dictée remplit seulement le champ, et c\'est vous qui appuyez sur Envoyer.</string>
     <plurals name="widget_n_waiting">
         <item quantity="one">%1$d en attente</item>
         <item quantity="many">%1$d en attente</item>

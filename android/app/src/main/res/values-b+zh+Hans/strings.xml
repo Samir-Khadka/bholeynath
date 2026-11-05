@@ -455,6 +455,10 @@
     <string name="history_export_header">Bholeynath · 最近的决定</string>
     <string name="mute_agents">静音某个代理的通知</string>
     <string name="mute_agents_hint">所选代理的完成、失败和达到上限通知将保持安静。请求和问题始终会送达。</string>
+    <string name="voice_dictate">听写</string>
+    <string name="voice_speak">朗读</string>
+    <string name="voice_stop">停止</string>
+    <string name="voice_privacy">您的语音将发送到手机语音识别器以转换为文字。语音回答均在此手机上生成。语音功能不会发送任何内容：听写仅填充输入框，仍由您点击发送。</string>
     <plurals name="widget_n_waiting">
         <item quantity="other">%1$d 个等待中</item>
     </plurals>

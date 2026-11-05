@@ -453,7 +453,11 @@
     "history_export": "Ekspor sebagai teks",
     "history_export_header": "Bholeynath · keputusan terbaru",
     "mute_agents": "Bisukan pemberitahuan agen",
-    "mute_agents_hint": "Pemberitahuan selesai, gagal, dan batas dari agen yang kamu pilih tetap senyap. Permintaan dan pertanyaan selalu masuk."
+    "mute_agents_hint": "Pemberitahuan selesai, gagal, dan batas dari agen yang kamu pilih tetap senyap. Permintaan dan pertanyaan selalu masuk.",
+    "voice_dictate": "Dikte",
+    "voice_speak": "Bacakan",
+    "voice_stop": "Berhenti",
+    "voice_privacy": "Suara Anda dikirim ke pengenal ucapan telepon untuk menjadi teks. Jawaban lisan dibuat di telepon ini. Suara tidak pernah mengirim apa pun: dikte hanya mengisi kotak, dan Anda tetap menekan Kirim."
   },
   "plurals": {
     "widget_n_waiting": {"other": "%1$d menunggu"},

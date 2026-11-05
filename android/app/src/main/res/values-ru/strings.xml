@@ -455,6 +455,10 @@
     <string name="history_export_header">Bholeynath · недавние решения</string>
     <string name="mute_agents">Отключить уведомления агента</string>
     <string name="mute_agents_hint">Уведомления о завершении, ошибке и лимите выбранных агентов не беспокоят. Запросы и вопросы приходят всегда.</string>
+    <string name="voice_dictate">Диктовать</string>
+    <string name="voice_speak">Читать вслух</string>
+    <string name="voice_stop">Стоп</string>
+    <string name="voice_privacy">Ваш голос отправляется в распознаватель речи телефона, чтобы стать текстом. Озвученные ответы создаются на этом телефоне. Голос ничего не отправляет: диктовка только заполняет поле, а кнопку «Отправить» нажимаете вы.</string>
     <plurals name="widget_n_waiting">
         <item quantity="one">%1$d ожидает</item>
         <item quantity="few">%1$d ожидают</item>

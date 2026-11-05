@@ -248,10 +248,6 @@
     <string name="chat_clear_body">This removes the conversation from this phone and tells your computer to forget it.</string>
     <string name="chat_model">Model: %1$s</string>
     <string name="chat_count">%1$d / %2$d</string>
-    <string name="voice_dictate">Dictate</string>
-    <string name="voice_speak">Read aloud</string>
-    <string name="voice_stop">Stop</string>
-    <string name="voice_privacy">Your voice goes to the phone speech recognizer to become text. Spoken answers are made on this phone. Voice never sends anything: dictation only fills the box, and you still tap Send.</string>
     <string name="chat_ref_too_long">That message is too long.</string>
     <string name="chat_ref_no_model">Pick a model first.</string>
     <string name="chat_ref_busy">Wait for the answer to finish, or stop it.</string>
@@ -459,6 +455,10 @@
     <string name="history_export_header">Bholeynath · recent decisions</string>
     <string name="mute_agents">Mute an agent\'s notices</string>
     <string name="mute_agents_hint">Finished, failed and limit notices of the agents you pick stay quiet. Requests and questions always come through.</string>
+    <string name="voice_dictate">Dictate</string>
+    <string name="voice_speak">Read aloud</string>
+    <string name="voice_stop">Stop</string>
+    <string name="voice_privacy">Your voice goes to the phone speech recognizer to become text. Spoken answers are made on this phone. Voice never sends anything: dictation only fills the box, and you still tap Send.</string>
     <plurals name="widget_n_waiting">
         <item quantity="one">%1$d waiting</item>
         <item quantity="other">%1$d waiting</item>

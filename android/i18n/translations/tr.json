@@ -453,7 +453,11 @@
     "history_export": "Metin olarak dışa aktar",
     "history_export_header": "Bholeynath · son kararlar",
     "mute_agents": "Bir ajanın bildirimlerini sessize al",
-    "mute_agents_hint": "Seçtiğin ajanların tamamlanma, başarısızlık ve sınır bildirimleri sessiz kalır. İstekler ve sorular her zaman iletilir."
+    "mute_agents_hint": "Seçtiğin ajanların tamamlanma, başarısızlık ve sınır bildirimleri sessiz kalır. İstekler ve sorular her zaman iletilir.",
+    "voice_dictate": "Dikte et",
+    "voice_speak": "Sesli oku",
+    "voice_stop": "Durdur",
+    "voice_privacy": "Sesiniz metne dönüşmesi için telefonun konuşma tanıyıcısına gider. Sesli yanıtlar bu telefonda oluşturulur. Sesli özellik hiçbir şey göndermez: dikte yalnızca kutuyu doldurur, Gönder'e yine siz dokunursunuz."
   },
   "plurals": {
     "widget_n_waiting": {"one": "%1$d öğe bekliyor", "other": "%1$d öğe bekliyor"},

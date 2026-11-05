@@ -455,6 +455,10 @@
     <string name="history_export_header">Bholeynath · keputusan terbaru</string>
     <string name="mute_agents">Bisukan pemberitahuan agen</string>
     <string name="mute_agents_hint">Pemberitahuan selesai, gagal, dan batas dari agen yang kamu pilih tetap senyap. Permintaan dan pertanyaan selalu masuk.</string>
+    <string name="voice_dictate">Dikte</string>
+    <string name="voice_speak">Bacakan</string>
+    <string name="voice_stop">Berhenti</string>
+    <string name="voice_privacy">Suara Anda dikirim ke pengenal ucapan telepon untuk menjadi teks. Jawaban lisan dibuat di telepon ini. Suara tidak pernah mengirim apa pun: dikte hanya mengisi kotak, dan Anda tetap menekan Kirim.</string>
     <plurals name="widget_n_waiting">
         <item quantity="other">%1$d menunggu</item>
     </plurals>

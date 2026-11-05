@@ -453,7 +453,11 @@
     "history_export": "导出为文本",
     "history_export_header": "Bholeynath · 最近的决定",
     "mute_agents": "静音某个代理的通知",
-    "mute_agents_hint": "所选代理的完成、失败和达到上限通知将保持安静。请求和问题始终会送达。"
+    "mute_agents_hint": "所选代理的完成、失败和达到上限通知将保持安静。请求和问题始终会送达。",
+    "voice_dictate": "听写",
+    "voice_speak": "朗读",
+    "voice_stop": "停止",
+    "voice_privacy": "您的语音将发送到手机语音识别器以转换为文字。语音回答均在此手机上生成。语音功能不会发送任何内容：听写仅填充输入框，仍由您点击发送。"
   },
   "plurals": {
     "widget_n_waiting": {"other": "%1$d 个等待中"},
