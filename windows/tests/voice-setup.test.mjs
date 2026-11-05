@@ -43,8 +43,11 @@ const { voiceSetupSteps } = await import("../src/hub/voice-setup.ts");
 
 test("voice is on by default in the hub fallback status", () => {
   assert.equal(DEFAULT_STATUS.prefs.voice, true);
+  assert.equal(DEFAULT_STATUS.prefs.voiceLanguage, "auto");
   assert.equal(DEFAULT_STATUS.prefs.voiceOutput, "system");
   assert.equal(DEFAULT_STATUS.models.parakeet.state, "missing");
+  assert.equal(DEFAULT_STATUS.models.nepali.state, "missing");
+  assert.equal(DEFAULT_STATUS.models.downloadMb, 897);
 });
 
 test("the backend default is voice on, gated by the model and key in voice::sync", () => {
@@ -65,7 +68,7 @@ test("setup steps name the model, the key and the microphone, in order", () => {
     voiceSetupSteps(true, true).map((s) => s.state),
     ["done", "done", "info"],
   );
-  assert.match(voiceSetupSteps(false, false)[0].text, /700 MB/);
+  assert.match(voiceSetupSteps(false, false)[0].text, /900 MB/);
   assert.match(voiceSetupSteps(false, false)[1].text, /Claude key/);
   assert.match(voiceSetupSteps(false, false)[2].text, /microphone/);
 });

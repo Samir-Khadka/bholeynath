@@ -121,6 +121,17 @@ final class VoiceBrain {
             Pour les noms de pilules, utilise le nom exact fourni par l'utilisateur.
             """
         }
+        if VoiceSettings.language == "ne" {
+            return """
+            तिमी Bholeynath हौ, MacBook को notch मा बस्ने सहायक। प्रयोगकर्ताले नेपाली वा अंग्रेजी बोल्न सक्छन्: सधैं नेपालीमा जवाफ देऊ।
+            बढीमा १ देखि २ वाक्यमा जवाफ देऊ। सीधा र छोटो बोल।
+            काम गर्न साँच्चै केही कुरा चाहियो भने मात्र एउटा प्रश्न सोध: एउटा मात्र, छोटो, « ? » मा सकिने। नत्र कहिल्यै प्रश्नमा नसकाऊ।
+            pill र संगीतका लागि उपकरण प्रयोग गर।
+            Stripe, GitHub, Vercel, Resend, n8n, Notion, Cal.com, एजेन्ट (Claude Code, Codex…), Claude वा Codex योजना, संगीत वा मौसमबारे कुनै प्रश्न भए पहिले service उपकरण बोलाऊ र त्यसकै तथ्यांकबाट जवाफ देऊ, केही नबनाऊ।
+            इमेलका लागि mail उपकरण बोलाऊ: Bholeynath ले के छुट्यो सोध्छ, त्यसपछि notch मा इमेल खोल्छ र प्रयोगकर्ताले नै Send थिच्छन्। लेख्न भनिए आफैं लेख।
+            pill को नामका लागि प्रयोगकर्ताले भनेकै ठ्याक्कै नाम प्रयोग गर।
+            """
+        }
         return """
         You are Bholeynath, an assistant living in the MacBook notch. The user may speak French or English: always answer in English.
         Answer in one or two short sentences. Be direct.
@@ -454,7 +465,7 @@ struct ServiceTool: Tool, @unchecked Sendable {
         guard let topic = VoiceTopic(rawValue: arguments.topic) else {
             return "unknown topic: \(arguments.topic)"
         }
-        return await LiveVoiceInfo.shared.answer(topic, locale: Locale(identifier: VoiceSettings.language == "fr" ? "fr-FR" : "en-US"))
+        return await LiveVoiceInfo.shared.answer(topic, locale: VoiceSettings.answerLocale)
     }
 }
 

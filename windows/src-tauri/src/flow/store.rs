@@ -114,6 +114,10 @@ pub struct Prefs {
     pub voice_output: String,
     /// The ElevenLabs voice: "female" or "male".
     pub voice_gender: String,
+    /// The language the voice loop listens for: "auto" (default — English
+    /// first, Nepali when it does not sound like English), "en" or "ne".
+    #[serde(default = "default_voice_language")]
+    pub voice_language: String,
 }
 
 impl Default for Prefs {
@@ -136,6 +140,7 @@ impl Default for Prefs {
             mute_others: true,
             voice_output: "system".into(),
             voice_gender: "female".into(),
+            voice_language: "auto".into(),
         }
     }
 }
@@ -144,6 +149,11 @@ impl Default for Prefs {
 pub struct Words {
     pub words: Vec<String>,
     pub replacements: Vec<Replacement>,
+}
+
+/// The voice language for prefs files written before it existed.
+pub fn default_voice_language() -> String {
+    "auto".into()
 }
 
 /// Apps that get a style from the start: mails polished, chats natural, code
@@ -605,5 +615,6 @@ mod tests {
         assert_eq!(p.key, FlowKey::RightAlt);
         assert_eq!(p.keep_days, 30);
         assert!(p.open_at_launch);
+        assert_eq!(p.voice_language, "auto");
     }
 }

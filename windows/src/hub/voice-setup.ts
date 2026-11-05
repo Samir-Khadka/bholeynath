@@ -15,7 +15,7 @@ export interface VoiceSetupStep {
 export function voiceSetupSteps(modelReady: boolean, hasClaudeKey: boolean): VoiceSetupStep[] {
   return [
     {
-      text: "Download the voice model (about 700 MB, once — it stays on this computer)",
+      text: "Download the voice models (about 900 MB, once — they stay on this computer)",
       state: modelReady ? "done" : "todo",
     },
     {

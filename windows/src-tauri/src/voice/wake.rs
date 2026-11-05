@@ -2,6 +2,8 @@
 // speech from silence on the microphone. Nothing here touches the OS.
 
 /// Lower case, accents gone, everything but letters and digits a space.
+/// Devanagari is kept whole (U+0900–U+097F): the vowel signs are marks, not
+/// letters, and `is_alphanumeric` would drop them ("ओके" would lose its े).
 pub fn normalize(text: &str) -> String {
     let mut out = String::with_capacity(text.len());
     for c in text.chars().flat_map(char::to_lowercase) {
@@ -14,12 +16,23 @@ pub fn normalize(text: &str) -> String {
             'ù' | 'ú' | 'û' | 'ü' => 'u',
             'ÿ' | 'ý' => 'y',
             'ñ' => 'n',
+            c if ('\u{0900}'..='\u{097F}').contains(&c) => c,
             c if c.is_alphanumeric() => c,
             _ => ' ',
         };
         out.push(base);
     }
     out.split_whitespace().collect::<Vec<_>>().join(" ")
+}
+
+/// How the Nepali model may write "ओके".
+fn is_ok_ne(word: &str) -> bool {
+    word == "ओके"
+}
+
+/// How the Nepali model writes "भोलेनाथ", in one word.
+fn is_bholeynath_ne(word: &str) -> bool {
+    word == "भोलेनाथ"
 }
 
 /// How Parakeet may write "OK".
@@ -71,6 +84,19 @@ pub fn after_wake(text: &str) -> Option<String> {
         // "okbholeynath" in one piece.
         if let Some(rest) = norm[i].strip_prefix("okay").or_else(|| norm[i].strip_prefix("ok")) {
             if is_bholeynath(rest.trim()) {
+                return Some(words[i + 1..].join(" ").trim().to_string());
+            }
+        }
+        // "ओके भोलेनाथ", as the Nepali model writes it — and "ओ के" split in two.
+        if is_ok_ne(&norm[i]) || (norm[i] == "ओ" && norm.get(i + 1).map(String::as_str) == Some("के")) {
+            let j = if norm[i] == "ओ" { i + 2 } else { i + 1 };
+            if norm.get(j).map(String::as_str).is_some_and(is_bholeynath_ne) {
+                return Some(words[j + 1..].join(" ").trim_start_matches([',', '.', '!', ' ', '।']).trim().to_string());
+            }
+        }
+        // "ओकेभोलेनाथ" in one piece.
+        if let Some(rest) = norm[i].strip_prefix("ओके") {
+            if is_bholeynath_ne(rest.trim()) {
                 return Some(words[i + 1..].join(" ").trim().to_string());
             }
         }
@@ -180,8 +206,13 @@ impl Vad {
     }
 }
 
-/// "fr-FR" for a French answer, else None (the system's language).
+/// "ne-NP" for a Nepali answer, "fr-FR" for a French one, else None (the
+/// system's language). Devanagari decides Nepali — the answer is in the
+/// language it was written in, not the language it was heard in.
 pub fn speech_lang(text: &str) -> Option<&'static str> {
+    if text.chars().any(|c| ('\u{0900}'..='\u{097F}').contains(&c)) {
+        return Some("ne-NP");
+    }
     let n = normalize(text);
     let words: Vec<&str> = n.split(' ').collect();
     let french = ["le", "la", "les", "est", "tu", "vous", "je", "un", "une", "des", "pour", "pas", "c", "et", "sur", "avec", "ton", "ta"];
@@ -207,6 +238,15 @@ mod tests {
     }
 
     #[test]
+    fn the_wake_phrase_in_devanagari() {
+        assert_eq!(after_wake("ओके भोलेनाथ, मलाई संगीत बजाऊ।").as_deref(), Some("मलाई संगीत बजाऊ।"));
+        assert_eq!(after_wake("ओके भोलेनाथ।").as_deref(), Some(""));
+        assert_eq!(after_wake("ओकेभोलेनाथ के छ").as_deref(), Some("के छ"));
+        assert_eq!(after_wake("भोलेनाथलाई भन").as_deref(), None);
+        assert_eq!(normalize("ओके भोलेनाथ, के छ?"), "ओके भोलेनाथ के छ");
+    }
+
+    #[test]
     fn speech_is_cut_after_a_pause() {
         let mut vad = Vad::default();
         let silence = vec![0.0f32; 16_000];
@@ -225,5 +265,11 @@ mod tests {
     fn french_answers_are_spoken_in_french() {
         assert_eq!(speech_lang("C'est fait, j'ai ajouté Stripe pour toi."), Some("fr-FR"));
         assert_eq!(speech_lang("Done, Stripe is in the island."), None);
+    }
+
+    #[test]
+    fn nepali_answers_are_spoken_in_nepali() {
+        assert_eq!(speech_lang("सकियो, मैले Stripe थपें।"), Some("ne-NP"));
+        assert_eq!(speech_lang("आज मौसम राम्रो छ।"), Some("ne-NP"));
     }
 }

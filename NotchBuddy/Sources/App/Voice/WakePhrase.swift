@@ -36,11 +36,14 @@ enum WakePhrase {
 
         // Wake phrase patterns (normalised).
         // "ok cou cou" handled as a 3-token pattern in case the STT splits it.
+        // "ओके भोलेनाथ" is the Nepali wake phrase, as Apple's Nepali
+        // recognizer writes it.
         let patterns: [[String]] = [
             ["ok",  "bholeynath"],
             ["ok",  "cou", "cou"],
             ["hey", "bholeynath"],
             ["hey", "cou", "cou"],
+            ["ओके", "भोलेनाथ"],
         ]
 
         // Find LAST occurrence of any pattern

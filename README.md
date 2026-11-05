@@ -45,7 +45,7 @@ Bholeynath wears a complete Hindu theme: a manuscript aesthetic — parchment ca
 
 ## Voice assistant
 
-Say "OK Bholeynath" on Windows or Mac, tap the microphone on Android or iPhone, and hear the answer spoken back. Voice is on by default where it can be set up safely, and it stays silent until its one-time setup is done. Voice never approves a permission, sends a message, or runs anything destructive — those still need an explicit click. Full per-platform details, setup, and the privacy rules: [docs/VOICE_ASSISTANT.md](docs/VOICE_ASSISTANT.md).
+Say "OK Bholeynath" on Windows or Mac, tap the microphone on Android or iPhone, and hear the answer spoken back — in English or Nepali. Voice is on by default where it can be set up safely, and it stays silent until its one-time setup is done. Voice never approves a permission, sends a message, or runs anything destructive — those still need an explicit click. Full per-platform details, setup, and the privacy rules: [docs/VOICE_ASSISTANT.md](docs/VOICE_ASSISTANT.md).
 
 ## Privacy — the rules this fork keeps
 

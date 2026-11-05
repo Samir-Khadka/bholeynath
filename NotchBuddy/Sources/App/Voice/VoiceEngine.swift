@@ -31,6 +31,10 @@ final class VoiceEngine: ObservableObject {
     @Published private(set) var commandTranscript: String = ""
     @Published private(set) var recognizerUnavailable: Bool = false
     @Published private(set) var audioError: String? = nil
+    /// Nepali is recognised by Apple's servers on this Mac (no on-device
+    /// Nepali model here). Settings → Voice shows the note. English and
+    /// French are never in this state.
+    @Published private(set) var nepaliServerRecognition: Bool = false
     /// Read by Narayan's canvas every frame; not published, so ~20 updates/s while I talk
     /// don't re-render Settings or the island views.
     private(set) var micLevel: Double = 0
@@ -49,6 +53,8 @@ final class VoiceEngine: ObservableObject {
     private var audio:   VoiceAudio?
     private var spotter: WakeSpotter?
     private var locale:  Locale?
+    /// Whether `locale` is recognised on this Mac (`suitableLocale()`).
+    private var localeOnDevice: Bool = true
 
     private var voiceSegmentActive = false
 
@@ -174,14 +180,14 @@ final class VoiceEngine: ObservableObject {
         NotificationCenter.default.post(name: .voiceWoke, object: "direct" as NSString)
         let preroll = audio.drainPreroll()
         // startInCommandPhase: skip wake-phrase gate, deliver speech directly as command.
-        let started = spotter.beginWindow(locale: loc, preroll: preroll, startInCommandPhase: true)
+        let started = spotter.beginWindow(locale: loc, onDevice: localeOnDevice, preroll: preroll, startInCommandPhase: true)
         if !started {
             appendAppLog("nb.log", "[Voice] direct listen refused (alreadyActive/unavailable), retrying in 150ms")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { [weak self] in
                 guard let self, self.isListeningForCommand else { return }
                 guard let spotter = self.spotter, let audio = self.audio, let loc = self.locale else { return }
                 let preroll2 = audio.drainPreroll()
-                let started2 = spotter.beginWindow(locale: loc, preroll: preroll2, startInCommandPhase: true)
+                let started2 = spotter.beginWindow(locale: loc, onDevice: localeOnDevice, preroll: preroll2, startInCommandPhase: true)
                 if !started2 {
                     appendAppLog("nb.log", "[Voice] direct listen still refused, giving up")
                     self.endCommand(postFinished: true)
@@ -204,7 +210,7 @@ final class VoiceEngine: ObservableObject {
 
     private func startAudioPipeline() {
         guard audio == nil else { return }
-        guard let loc = suitableLocale() else {
+        guard let (loc, onDevice) = suitableLocale() else {
             recognizerUnavailable = true
             appendAppLog("nb.log", "[Voice] no suitable on-device recognizer — voice disabled")
             return
@@ -212,6 +218,8 @@ final class VoiceEngine: ObservableObject {
         recognizerUnavailable = false
         audioError = nil
         locale = loc
+        localeOnDevice = onDevice
+        nepaliServerRecognition = loc.language.languageCode?.identifier == "ne" && !onDevice
 
         let a = VoiceAudio()
         let s = WakeSpotter()
@@ -387,7 +395,7 @@ final class VoiceEngine: ObservableObject {
     @discardableResult
     private func openWakeWindow(audio: VoiceAudio, spotter: WakeSpotter, locale: Locale) -> Bool {
         let preroll = audio.drainPreroll()
-        let started = spotter.beginWindow(locale: locale, preroll: preroll)
+        let started = spotter.beginWindow(locale: locale, onDevice: localeOnDevice, preroll: preroll)
         if started {
             windowOpenedAt     = Date()
             firstUnavailableAt = nil
@@ -700,22 +708,37 @@ final class VoiceEngine: ObservableObject {
 
     // MARK: - Helpers
 
-    private func suitableLocale() -> Locale? {
+    /// The locale to listen in, and whether Apple recognises it on this Mac.
+    /// English and French stay on-device only, as before. Nepali ("ne", or
+    /// among the Mac's dictation languages in Automatic) is tried on-device
+    /// first; where Apple has no on-device Nepali model, it falls back to
+    /// Apple's servers for Nepali only — Settings says so, and
+    /// `nepaliServerRecognition` tells the UI. The iPhone's Dictation already
+    /// does exactly this (on-device where supported, Apple otherwise).
+    /// Automatic stays on-device-first: a Nepali Mac whose Nepali is
+    /// server-only still hears on-device English in Automatic — pick
+    /// Nepali explicitly to hear Nepali there.
+    private func suitableLocale() -> (locale: Locale, onDevice: Bool)? {
         // The language I speak (Settings → Voice → "You speak"): automatic = the Mac's
         // dictation languages first. The answer language is separate (VoiceSettings.language).
-        var candidates: [Locale]
+        // Second value: may this locale fall back to Apple's servers?
+        var candidates: [(Locale, Bool)]
         switch VoiceSettings.listenLanguage {
-        case "fr": candidates = [Locale(identifier: "fr-FR"), Locale(identifier: "fr-CA")]
-        case "en": candidates = [Locale(identifier: "en-US"), Locale(identifier: "en-GB"), Locale(identifier: "en-AU")]
+        case "fr": candidates = [(Locale(identifier: "fr-FR"), false), (Locale(identifier: "fr-CA"), false)]
+        case "en": candidates = [(Locale(identifier: "en-US"), false), (Locale(identifier: "en-GB"), false), (Locale(identifier: "en-AU"), false)]
+        case "ne": candidates = [(Locale(identifier: "ne-NP"), true)]
         default:   candidates = []
         }
-        candidates += MacDictation.automaticLocales()
-        candidates += [Locale(identifier: "en-US"), Locale(identifier: "fr-FR")]
-        for locale in candidates {
-            if let r = SFSpeechRecognizer(locale: locale),
-               r.supportsOnDeviceRecognition, r.isAvailable {
-                return locale
-            }
+        let auto = MacDictation.automaticLocales()
+        candidates += auto.map { ($0, false) }
+        candidates += [(Locale(identifier: "en-US"), false), (Locale(identifier: "fr-FR"), false)]
+        if auto.contains(where: { $0.identifier == "ne-NP" || $0.language.languageCode?.identifier == "ne" }) {
+            candidates += [(Locale(identifier: "ne-NP"), true)]
+        }
+        for (locale, allowServer) in candidates {
+            guard let r = SFSpeechRecognizer(locale: locale), r.isAvailable else { continue }
+            if r.supportsOnDeviceRecognition { return (locale, true) }
+            if allowServer { return (locale, false) }
         }
         return nil
     }

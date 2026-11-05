@@ -104,7 +104,7 @@ test("language redraw retains the latest dictation state and key in the status l
   try {
     const status = root.find(".hub-status")[0];
     emit("flow-prefs", { enabled: true, key: "right_ctrl" });
-    emit("speech-models", { parakeet: { state: "ready" } });
+    emit("speech-models", { parakeet: { state: "ready" }, nepali: { state: "ready" } });
     const english = status.textContent;
     assert.match(english, /^Ready · hold /);
     calls.length = 0;

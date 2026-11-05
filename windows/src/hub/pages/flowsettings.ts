@@ -129,7 +129,7 @@ export async function flowSettingsPage(page: HTMLElement, ctx: HubContext) {
   // ── Recognition ──
   page.append(label(t("Recognition")));
   page.append(anchor("flow.recognition", card(
-    row(t("Parakeet, on your computer"), t("The most accurate, offline, 25 languages. Downloaded once (about {0} MB).", { 0: number(status.models.downloadMb) }), modelsControl(ctx)),
+    row(t("Voice models, on your computer"), t("Parakeet hears English, IndicConformer hears Nepali — both on this computer, without the internet. Downloaded once (about {0} MB).", { 0: number(status.models.downloadMb) }), modelsControl(ctx)),
     h("div", { class: "hub-note", text: t("Your voice never leaves this computer: Parakeet turns it into text here, and the recording is dropped as soon as it is pasted.") }),
   )));
 

@@ -50,6 +50,9 @@ export interface FlowPrefs {
   openAtLaunch: boolean;
   /** « OK Bholeynath »: listen for it and answer with Claude. */
   voice: boolean;
+  /** The language the voice loop listens for: "auto" (English first, Nepali
+   * when it does not sound like English), "en" or "ne". */
+  voiceLanguage: "auto" | "en" | "ne";
   voiceOutput: VoiceOutput;
   voiceGender: "female" | "male";
   /** The other apps go quiet while Bholeynath listens to you (Windows). */
@@ -64,6 +67,7 @@ export type ModelState =
 
 export interface ModelsStatus {
   parakeet: ModelState;
+  nepali: ModelState;
   downloadMb: number;
 }
 

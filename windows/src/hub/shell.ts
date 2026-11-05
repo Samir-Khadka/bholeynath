@@ -83,9 +83,9 @@ export interface HubOptions {
 export const DEFAULT_STATUS: FlowStatus = {
   prefs: {
     enabled: false, key: "right_ctrl", keyCombo: [], edge: "bottom", mic: "", keepDays: 30, cleanup: false,
-    defaultStyle: "natural", summaryEngine: "claude", openAtLaunch: true, voice: true, voiceOutput: "system", voiceGender: "female", muteOthers: true,
+    defaultStyle: "natural", summaryEngine: "claude", openAtLaunch: true, voice: true, voiceLanguage: "auto", voiceOutput: "system", voiceGender: "female", muteOthers: true,
   },
-  models: { parakeet: { state: "missing" }, downloadMb: 700 },
+  models: { parakeet: { state: "missing" }, nepali: { state: "missing" }, downloadMb: 897 },
   keys: "ok",
   hasClaudeKey: false,
   mics: [],
