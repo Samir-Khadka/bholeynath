@@ -21,9 +21,12 @@ jobs:
   apk:
     runs-on: ubuntu-24.04
     defaults: { run: { working-directory: android } }
+
     steps:
       - uses: actions/checkout@v7
         with: { persist-credentials: false }
+      - name: Restore executable bits lost in snapshot pushes
+        run: chmod +x gradlew
       - uses: actions/setup-java@v6
         with: { distribution: temurin, java-version: '17' }
       - uses: actions/setup-node@v7
