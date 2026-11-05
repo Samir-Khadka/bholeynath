@@ -341,15 +341,17 @@ final class VoiceActionRunner {
         if case .switchLanguage(let lang) = pending.kind {
             if Self.isYes(transcript) {
                 onLanguageSwitch?(lang)
-                commandLocale = Locale(identifier: lang == "fr" ? "fr-FR" : "en-US")
+                commandLocale = Locale(identifier: lang == "fr" ? "fr-FR" : lang == "ne" ? "ne-NP" : "en-US")
                 return .init(outcome: .success, message: lang == "fr"
                     ? "D'accord, je te réponds en français maintenant."
+                    : lang == "ne" ? "हुन्छ, अबदेखि म नेपालीमा जवाफ दिन्छु।"
                     : "Sure, I'll answer in English from now on.")
             }
             if Self.isNo(transcript) {
                 let current = commandLocale?.language.languageCode?.identifier ?? "en"
                 return .init(outcome: .success, message: current == "fr"
                     ? "OK, je continue en français."
+                    : current == "ne" ? "ठीक छ, म नेपालीमै जवाफ दिन्छु।"
                     : "Okay, I'll keep answering in English.")
             }
             if !pending.askedAgain {
@@ -610,7 +612,10 @@ final class VoiceActionRunner {
     func offerLanguageSwitch(to lang: String) -> String {
         let current = commandLocale?.language.languageCode?.identifier ?? "en"
         let text: String
-        if lang == "fr" {
+        if lang == "ne" {
+            text = current == "ne" ? "तपाईं नेपालीमा बोल्दै हुनुहुन्छ। के म नेपालीमा जवाफ दिऊँ?"
+                                   : "By the way, you're speaking Nepali. Want me to answer in Nepali?"
+        } else if lang == "fr" {
             text = current == "fr" ? "Tu veux que je te réponde en français ?"
                                    : "By the way, you're speaking French. Want me to answer in French?"
         } else {
@@ -626,13 +631,22 @@ final class VoiceActionRunner {
         if isNo(s) { return false }
         return ["oui", "ouais", "ouai", "yes", "yeah", "yep", "sure", "ok", "okay", "d accord", "vas y",
                 "volontiers", "carrement", "please", "absolument", "bien sur", "go", "of course", "why not",
-                "pourquoi pas", "allez"].contains { t.contains(" " + $0 + " ") }
+                "pourquoi pas", "allez", "हो", "हुन्छ"].contains { t.contains(" " + $0 + " ") }
+            || nepaliWord(s, ["हो", "हुन्छ"])
     }
 
     static func isNo(_ s: String) -> Bool {
         let t = " " + IntentParser.normalise(s) + " "
         return ["non", "no", "nope", "nah", "pas besoin", "garde", "keep", "laisse", "c est bon comme ca",
-                "stay", "reste", "don t", "dont"].contains { t.contains(" " + $0 + " ") }
+                "stay", "reste", "don t", "dont", "होइन"].contains { t.contains(" " + $0 + " ") }
+            || nepaliWord(s, ["होइन"])
+    }
+
+    /// A Nepali word in the raw text: `IntentParser.normalise` folds
+    /// diacritics, which can strip Devanagari vowel signs, so "हो" is also
+    /// checked before normalising. Exact words only ("होला" is not "हो").
+    private static func nepaliWord(_ s: String, _ words: [String]) -> Bool {
+        s.split(whereSeparator: { !$0.isLetter && !$0.isNumber }).contains { words.contains(String($0)) }
     }
 
     /// "Je veux que tu ajoutes" (no pill named) → asks which pill, and listens for it.

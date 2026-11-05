@@ -71,9 +71,14 @@ final class WakeSpotter: @unchecked Sendable {
     /// - `startInCommandPhase`: when `true`, skip the wake-phrase gate and start
     ///   delivering transcripts directly as command updates (used for follow-up
     ///   answers and the ⌃⌥V direct-listen shortcut).
+    /// - `onDevice`: when `false`, the words may go to Apple's servers. Only
+    ///   Nepali ever passes `false`: Apple has no on-device Nepali model on
+    ///   some Macs, and the Settings note says so. English and French stay
+    ///   on-device, as before.
     /// Returns `true` if the underlying recognition task was successfully started.
     @discardableResult
     func beginWindow(locale: Locale,
+                     onDevice: Bool = true,
                      preroll: [AVAudioPCMBuffer] = [],
                      startInCommandPhase: Bool = false) -> Bool {
         enum Refusal { case alreadyActive, unavailable }
@@ -91,14 +96,14 @@ final class WakeSpotter: @unchecked Sendable {
             guard !active else { refusal = .alreadyActive; return }
             if let made { cachedRecognizer = (locale.identifier, made) }
             guard let r = made,
-                  r.supportsOnDeviceRecognition,
-                  r.isAvailable else { refusal = .unavailable; return }
+                  r.isAvailable,
+                  onDevice ? r.supportsOnDeviceRecognition : true else { refusal = .unavailable; return }
 
             let req = SFSpeechAudioBufferRecognitionRequest()
             req.shouldReportPartialResults  = true
-            req.requiresOnDeviceRecognition = true
+            req.requiresOnDeviceRecognition = onDevice
             let extra = startInCommandPhase ? additionalContextualStrings : [String]()
-            req.contextualStrings = ["Bholeynath", "OK Bholeynath", "okay Bholeynath", "hey Bholeynath"] + extra
+            req.contextualStrings = ["Bholeynath", "OK Bholeynath", "okay Bholeynath", "hey Bholeynath", "ओके भोलेनाथ"] + extra
             preroll.forEach { req.append($0) }
 
             recognizer   = r

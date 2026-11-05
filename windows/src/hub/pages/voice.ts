@@ -44,20 +44,27 @@ function elevenKey(): HTMLElement {
 export async function voicePage(page: HTMLElement, ctx: HubContext) {
   const status = await ctx.refresh();
   const prefs = status.prefs;
-  page.append(ctx.hero("voice", "OK Bholeynath", t("Say « OK Bholeynath », then ask anything: add a pill, play music, the weather, an email to prepare.")));
+  page.append(ctx.hero("voice", "OK Bholeynath", t("Say « OK Bholeynath » — in English or Nepali — then ask anything: add a pill, play music, the weather, an email to prepare.")));
 
   const ready = status.models.parakeet.state === "ready";
+  const nepaliReady = status.models.nepali.state === "ready";
   page.append(label(t("Listening")));
+  const langs: ["auto" | "en" | "ne", string][] = [["auto", t("Automatic")], ["en", t("English")], ["ne", "नेपाली"]];
   const main = card(
     row(t("Listen for « OK Bholeynath »"), t("The microphone stays open; only what follows « OK Bholeynath » goes further."),
       toggle(prefs.voice, (on) => void ctx.setPrefs((p) => (p.voice = on)).then(() => ctx.navigate("voice")))),
     divider(),
-    row(t("Parakeet, on your computer"), t("Hears « OK Bholeynath » here, without the internet."), modelsControl(ctx, () => ctx.navigate("voice"))),
+    row(t("Voice language"), t("Automatic hears English first, and Nepali when it does not sound like English. Nepali listens with its own model; English is unchanged."),
+      segmented(langs, prefs.voiceLanguage, (v) => void ctx.setPrefs((p) => (p.voiceLanguage = v)).then(() => ctx.navigate("voice")))),
+    divider(),
+    row(t("Voice models, on your computer"), t("Parakeet hears English, IndicConformer hears Nepali — both on this computer, without the internet."), modelsControl(ctx, () => ctx.navigate("voice"))),
   );
   if (prefs.voice && !status.hasClaudeKey) {
     main.append(h("div", { class: "hub-warn", text: t("Bholeynath answers with Claude: add your Claude key in Notch → Chat.") }));
   } else if (prefs.voice && !ready) {
-    main.append(h("div", { class: "hub-warn", text: t("Download the voice model so Bholeynath can hear you.") }));
+    main.append(h("div", { class: "hub-warn", text: t("Download the voice models so Bholeynath can hear you.") }));
+  } else if (prefs.voice && prefs.voiceLanguage === "ne" && !nepaliReady) {
+    main.append(h("div", { class: "hub-warn", text: t("Download the voice models so Bholeynath can hear Nepali.") }));
   }
   page.append(main);
 
@@ -92,7 +99,7 @@ export async function voicePage(page: HTMLElement, ctx: HubContext) {
 
   page.append(label(t("Privacy")));
   page.append(card(
-    h("div", { class: "hub-note", text: t("Your voice never leaves this computer: Parakeet turns it into text here. Only the words after « OK Bholeynath » go to Anthropic with your Claude key, and to ElevenLabs if you picked it for the answers.") }),
+    h("div", { class: "hub-note", text: t("Your voice never leaves this computer: Parakeet turns English into text here, and the Nepali model turns Nepali into text here. Only the words after « OK Bholeynath » go to Anthropic with your Claude key, and to ElevenLabs if you picked it for the answers.") }),
     divider(),
     h("div", { class: "hub-note", text: t("An email is never sent by Bholeynath: your mail app opens with it written, and you send it.") }),
   ));

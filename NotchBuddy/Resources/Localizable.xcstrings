@@ -100882,6 +100882,107 @@
           }
         }
       }
+    },
+    "Nepali is recognised by Apple on their servers on this Mac — Apple has no on-device Nepali model here. English and French stay on this Mac." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "على جهاز Mac هذا، يتم التعرّف على اللغة النيبالية بواسطة Apple على خوادمها — لا يوجد لدى Apple نموذج نيبالي على الجهاز هنا. تبقى الإنجليزية والفرنسية على هذا الجهاز."
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "এই Mac-এ নেপালি ভাষা Apple-এর সার্ভারে শনাক্ত করা হয় — এখানে Apple-এর কোনো অন-ডিভাইস নেপালি মডেল নেই। ইংরেজি ও ফরাসি এই Mac-এই থাকে।"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf diesem Mac wird Nepali von Apple auf seinen Servern erkannt — Apple hat hier kein On-Device-Nepali-Modell. Englisch und Französisch bleiben auf diesem Mac."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepali is recognised by Apple on their servers on this Mac — Apple has no on-device Nepali model here. English and French stay on this Mac."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En este Mac, Apple reconoce el nepalí en sus servidores; Apple no tiene aquí un modelo de nepalí en el dispositivo. El inglés y el francés se mantienen en este Mac."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sur ce Mac, le népalais est reconnu par Apple sur ses serveurs — Apple n’a pas de modèle de népalais embarqué ici. L’anglais et le français restent sur ce Mac."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस Mac पर नेपाली भाषा को Apple अपने सर्वर पर पहचानता है — यहाँ Apple के पास कोई ऑन-डिवाइस नेपाली मॉडल नहीं है। अंग्रेज़ी और फ़्रेंच इसी Mac पर रहते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di Mac ini, bahasa Nepal dikenali oleh Apple di server mereka — Apple tidak memiliki model bahasa Nepal di perangkat di sini. Bahasa Inggris dan Prancis tetap di Mac ini."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この Mac では、ネパール語は Apple のサーバー上で認識されます——Apple にはここにデバイス上のネパール語モデルがありません。英語とフランス語はこの Mac 上で処理されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 Mac에서는 네팔어를 Apple 서버에서 인식합니다 — Apple에는 여기에 온디바이스 네팔어 모델이 없습니다. 영어와 프랑스어는 이 Mac에 그대로 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neste Mac, o nepalês é reconhecido pela Apple em seus servidores — a Apple não tem um modelo de nepalês no dispositivo aqui. O inglês e o francês permanecem neste Mac."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На этом Mac непальский язык распознаётся Apple на её серверах — у Apple здесь нет локальной модели непальского языка. Английский и французский остаются на этом Mac."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "บน Mac เครื่องนี้ ภาษาเนปาลจะถูกจดจำโดย Apple บนเซิร์ฟเวอร์ของ Apple — Apple ไม่มีโมเดลภาษาเนปาลบนอุปกรณ์ที่นี่ ภาษาอังกฤษและภาษาฝรั่งเศสยังคงอยู่บน Mac เครื่องนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu Mac’te Nepalce, Apple tarafından sunucularında tanınır — Apple’ın burada cihaz içi Nepalce modeli yoktur. İngilizce ve Fransızca bu Mac’te kalır."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在这台 Mac 上，尼泊尔语由 Apple 在服务器上识别——Apple 在此没有设备端尼泊尔语模型。英语和法语仍在这台 Mac 上处理。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在這台 Mac 上，尼泊爾語由 Apple 在伺服器上辨識——Apple 在此沒有裝置端尼泊爾語模型。英語和法語仍在這台 Mac 上處理。"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

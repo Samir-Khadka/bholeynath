@@ -194,10 +194,14 @@ final class Dictation: @unchecked Sendable {
         didSet { UserDefaults.standard.set(localeID, forKey: "dictationLocale") }
     }
 
-    /// The iPhone's languages first, then French and English.
+    /// The iPhone's languages first, then French, English and Nepali.
+    /// Nepali is listed even when the iPhone is not in Nepali, so the sheet
+    /// can hear it wherever Apple ships a ne-NP recognizer (the
+    /// `SFSpeechRecognizer(locale:) != nil` check drops it where Apple
+    /// does not).
     static var languages: [String] {
         var ids: [String] = []
-        for id in Locale.preferredLanguages + ["fr-FR", "en-US"] where !ids.contains(id) {
+        for id in Locale.preferredLanguages + ["fr-FR", "en-US", "ne-NP"] where !ids.contains(id) {
             if SFSpeechRecognizer(locale: Locale(identifier: id)) != nil { ids.append(id) }
         }
         return ids

@@ -1,6 +1,8 @@
-// Speech to text on this computer: NVIDIA's Parakeet (25 languages) through
-// sherpa-onnx, and the small models that tell the voices of a call apart. The
-// Mac runs the same Parakeet through FluidAudio (ParakeetEngine.swift).
+// Speech to text on this computer: NVIDIA's Parakeet (25 languages) and
+// AI4Bharat's IndicConformer (Nepali) through sherpa-onnx, and the small
+// models that tell the voices of a call apart. The Mac runs the same Parakeet
+// through FluidAudio (ParakeetEngine.swift); its voice loop hears Nepali
+// through Apple Speech instead (VoiceEngine.swift).
 //
 // Nothing is downloaded until the user clicks Download in Bholeynath → Settings.
 // The files come from Hugging Face at a pinned revision, are checked against
@@ -16,8 +18,8 @@ use std::time::{Duration, Instant};
 
 use serde::Serialize;
 use sherpa_onnx::{
-    OfflineRecognizer, OfflineRecognizerConfig, OfflineSpeakerDiarization, OfflineSpeakerDiarizationConfig,
-    OfflineTransducerModelConfig,
+    OfflineNemoEncDecCtcModelConfig, OfflineRecognizer, OfflineRecognizerConfig, OfflineSpeakerDiarization,
+    OfflineSpeakerDiarizationConfig, OfflineTransducerModelConfig,
 };
 use tauri::{AppHandle, Emitter};
 
@@ -89,6 +91,31 @@ pub static PARAKEET: ModelSet = ModelSet {
     ],
 };
 
+/// AI4Bharat's IndicConformer, Nepali only, int8: hears Nepali (~198 MB).
+/// Same sherpa-onnx NeMo CTC stack as Parakeet, downloaded at setup, never
+/// bundled. The Hugging Face packaging is tagged Apache-2.0; the source
+/// model (AI4Bharat IndicConformer) is MIT. Pinned revision
+/// 9721eb71eea141fae0982cfcdb9dd2e3d4953c4a, verified 2026-11-05:
+/// ne/model.int8.onnx is 197,585,135 bytes, tokens.txt (shared by all 22
+/// languages in the repo) is 67,605 bytes.
+pub static INDIC_NEPALI: ModelSet = ModelSet {
+    id: "indic-nepali",
+    files: &[
+        ModelFile {
+            name: "model.int8.onnx",
+            url: "https://huggingface.co/parismitaglobalsolutions/indicconformer-sherpa-onnx/resolve/9721eb71eea141fae0982cfcdb9dd2e3d4953c4a/ne/model.int8.onnx",
+            size: 197_585_135,
+            sha256: "fbbc564e369046fd788d4150192a7e47c4e675346ec3f1b78002937fb3ccfb56",
+        },
+        ModelFile {
+            name: "tokens.txt",
+            url: "https://huggingface.co/parismitaglobalsolutions/indicconformer-sherpa-onnx/resolve/9721eb71eea141fae0982cfcdb9dd2e3d4953c4a/tokens.txt",
+            size: 67_605,
+            sha256: "ee60967630213f31951817ac8b402b92ec18cce80718a24a49b388e56672dfb2",
+        },
+    ],
+};
+
 /// pyannote's segmentation and a speaker embedding model: who speaks when, in a
 /// call (about 30 MB).
 pub static DIARIZER: ModelSet = ModelSet {
@@ -129,7 +156,8 @@ pub enum ModelState {
 #[serde(rename_all = "camelCase")]
 pub struct ModelsStatus {
     pub parakeet: ModelState,
-    /// Size of the whole download in MB, both sets.
+    pub nepali: ModelState,
+    /// Size of the whole download in MB, all three sets.
     pub download_mb: u64,
 }
 
@@ -144,23 +172,77 @@ fn downloads() -> &'static Mutex<Downloads> {
     D.get_or_init(|| Mutex::new(Downloads { running: false, fraction: 0.0, error: None }))
 }
 
-/// Both sets count as one download: dictation and the Notetaker are ready together.
+/// The language the voice loop listens for, from the prefs
+/// (`voice_language`: "auto", "en" or "ne"). Set by `voice::sync()` and by
+/// `flow_set_prefs()`; `transcribe()` reads it on every segment, so changing
+/// the setting takes effect without restarting the listener.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum VoiceLanguage {
+    Auto,
+    English,
+    Nepali,
+}
+
+impl VoiceLanguage {
+    pub fn from_prefs(s: &str) -> Self {
+        match s {
+            "en" => VoiceLanguage::English,
+            "ne" => VoiceLanguage::Nepali,
+            _ => VoiceLanguage::Auto,
+        }
+    }
+}
+
+fn voice_language_slot() -> &'static Mutex<VoiceLanguage> {
+    static L: OnceLock<Mutex<VoiceLanguage>> = OnceLock::new();
+    L.get_or_init(|| Mutex::new(VoiceLanguage::Auto))
+}
+
+pub fn set_voice_language(s: &str) {
+    *voice_language_slot().lock().unwrap() = VoiceLanguage::from_prefs(s);
+}
+
+pub fn voice_language() -> VoiceLanguage {
+    *voice_language_slot().lock().unwrap()
+}
+
+/// All three sets count as one download: dictation, the Notetaker and the
+/// Nepali voice are ready together.
 pub fn status() -> ModelsStatus {
     let d = downloads().lock().unwrap();
-    let parakeet = if d.running {
-        ModelState::Downloading { fraction: d.fraction }
-    } else if PARAKEET.is_present() && DIARIZER.is_present() {
-        ModelState::Ready
-    } else if let Some(error) = &d.error {
-        ModelState::Failed { error: error.clone() }
-    } else {
-        ModelState::Missing
+    let state = |set: &ModelSet| {
+        if d.running {
+            ModelState::Downloading { fraction: d.fraction }
+        } else if set.is_present() {
+            ModelState::Ready
+        } else if let Some(error) = &d.error {
+            ModelState::Failed { error: error.clone() }
+        } else {
+            ModelState::Missing
+        }
     };
-    ModelsStatus { parakeet, download_mb: (PARAKEET.total_size() + DIARIZER.total_size()) / 1_000_000 }
+    ModelsStatus {
+        parakeet: if d.running {
+            ModelState::Downloading { fraction: d.fraction }
+        } else if PARAKEET.is_present() && DIARIZER.is_present() {
+            ModelState::Ready
+        } else if let Some(error) = &d.error {
+            ModelState::Failed { error: error.clone() }
+        } else {
+            ModelState::Missing
+        },
+        nepali: state(&INDIC_NEPALI),
+        download_mb: (PARAKEET.total_size() + DIARIZER.total_size() + INDIC_NEPALI.total_size()) / 1_000_000,
+    }
 }
 
 pub fn is_ready() -> bool {
     PARAKEET.is_present()
+}
+
+/// The Nepali model is here, so the voice loop can be set to Nepali.
+pub fn is_nepali_ready() -> bool {
+    INDIC_NEPALI.is_present()
 }
 
 fn emit_status(app: &AppHandle) {
@@ -201,7 +283,7 @@ pub fn download(app: AppHandle) {
 }
 
 async fn download_all(app: &AppHandle) -> Result<(), String> {
-    let total = PARAKEET.total_size() + DIARIZER.total_size();
+    let total = PARAKEET.total_size() + DIARIZER.total_size() + INDIC_NEPALI.total_size();
     let mut done: u64 = 0;
     let client = reqwest::Client::builder()
         .connect_timeout(Duration::from_secs(20))
@@ -210,7 +292,7 @@ async fn download_all(app: &AppHandle) -> Result<(), String> {
         .build()
         .map_err(|e| e.to_string())?;
     let mut last_emit = Instant::now();
-    for set in [&PARAKEET, &DIARIZER] {
+    for set in [&PARAKEET, &DIARIZER, &INDIC_NEPALI] {
         let dir = set.dir();
         std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
         for file in set.files {
@@ -260,6 +342,7 @@ pub fn remove(app: &AppHandle) {
     unload();
     let _ = std::fs::remove_dir_all(PARAKEET.dir());
     let _ = std::fs::remove_dir_all(DIARIZER.dir());
+    let _ = std::fs::remove_dir_all(INDIC_NEPALI.dir());
     downloads().lock().unwrap().error = None;
     emit_status(app);
 }
@@ -320,11 +403,89 @@ pub fn preload() {
     std::thread::spawn(|| {
         let _ = recognizer();
     });
+    // Nepali too, when it is the language (or may be: Automatic).
+    if INDIC_NEPALI.is_present() && voice_language() != VoiceLanguage::English && nepali_slot().lock().unwrap().is_none() {
+        std::thread::spawn(|| {
+            let _ = nepali_recognizer();
+        });
+    }
 }
 
-/// Frees the model's memory (dictation turned off, models removed).
+/// Frees the models' memory (dictation turned off, models removed).
 pub fn unload() {
     *recognizer_slot().lock().unwrap() = None;
+    *nepali_slot().lock().unwrap() = None;
+}
+
+fn nepali_slot() -> &'static Mutex<Option<Arc<OfflineRecognizer>>> {
+    static N: OnceLock<Mutex<Option<Arc<OfflineRecognizer>>>> = OnceLock::new();
+    N.get_or_init(|| Mutex::new(None))
+}
+
+/// The loaded Nepali recognizer, loading it on first use (about 1 s).
+/// A NeMo CTC model: one ONNX file plus the shared tokens, `model_type`
+/// "nemo_ctc" — the same `OfflineRecognizer` as Parakeet, a different family.
+pub fn nepali_recognizer() -> Option<Arc<OfflineRecognizer>> {
+    if let Some(r) = nepali_slot().lock().unwrap().clone() {
+        return Some(r);
+    }
+    if !INDIC_NEPALI.is_present() {
+        return None;
+    }
+    let _guard = load_lock().lock().unwrap();
+    if let Some(r) = nepali_slot().lock().unwrap().clone() {
+        return Some(r);
+    }
+    let mut config = OfflineRecognizerConfig::default();
+    config.model_config.nemo_ctc = OfflineNemoEncDecCtcModelConfig { model: Some(INDIC_NEPALI.path("model.int8.onnx")) };
+    config.model_config.tokens = Some(INDIC_NEPALI.path("tokens.txt"));
+    config.model_config.model_type = Some("nemo_ctc".into());
+    config.model_config.num_threads = threads();
+    let started = Instant::now();
+    let r = OfflineRecognizer::create(&config).map(Arc::new);
+    match &r {
+        Some(_) => crate::log::line(format!("IndicConformer (Nepali) loaded in {:?}", started.elapsed())),
+        None => crate::log::line("IndicConformer (Nepali) could not be loaded"),
+    }
+    *nepali_slot().lock().unwrap() = r.clone();
+    r
+}
+
+/// Devanagari (U+0900–U+097F) anywhere in the text: this is Nepali, not English.
+pub fn contains_devanagari(text: &str) -> bool {
+    text.chars().any(|c| ('\u{0900}'..='\u{097F}').contains(&c))
+}
+
+/// Roughly English: most words are among the common words below. Parakeet
+/// cannot write Devanagari, so Nepali speech comes back from it as Latin
+/// fragments ("malai ke ho", "mero naam") that almost never are English
+/// words — a low score means "not English", not "bad English". Short
+/// commands ("play music", "ok bholeynath") score high: the common words
+/// include the verbs the voice loop hears most.
+pub fn looks_english(text: &str) -> bool {
+    const COMMON: &[&str] = &[
+        "the", "be", "to", "of", "and", "a", "in", "that", "it", "is", "was", "for", "on", "are", "as", "with", "his", "they", "i", "at",
+        "this", "have", "from", "or", "one", "had", "by", "but", "not", "what", "all", "were", "we", "when", "your", "can", "said", "there",
+        "use", "an", "each", "which", "she", "do", "how", "their", "if", "will", "up", "other", "about", "out", "many", "then", "them",
+        "these", "so", "some", "her", "would", "make", "like", "him", "into", "time", "has", "look", "two", "more", "write", "go", "see",
+        "no", "way", "could", "people", "my", "than", "first", "been", "call", "who", "its", "now", "find", "long", "down", "day", "did",
+        "get", "come", "made", "may", "part", "over", "new", "sound", "take", "only", "little", "work", "know", "place", "year", "live",
+        "me", "back", "give", "most", "very", "after", "thing", "our", "just", "name", "good", "man", "think", "say", "great", "where",
+        "help", "through", "much", "before", "line", "right", "too", "mean", "old", "any", "same", "tell", "boy", "follow", "came",
+        "want", "show", "also", "around", "form", "three", "small", "set", "put", "end", "does", "another", "well", "large", "must",
+        "big", "even", "such", "because", "turn", "here", "why", "ask", "went", "men", "read", "need", "land", "different", "home",
+        "us", "move", "try", "kind", "hand", "picture", "again", "change", "off", "play", "spell", "air", "away", "animal", "house",
+        "point", "page", "letter", "mother", "answer", "found", "study", "still", "learn", "should", "world", "music", "open", "stop",
+        "add", "remove", "list", "check", "weather", "today", "tomorrow", "email", "pause", "next", "volume", "search", "ok", "okay",
+        "hey", "bholeynath",
+    ];
+    let words: Vec<&str> =
+        text.split(|c: char| !c.is_alphanumeric()).filter(|w| !w.is_empty()).collect();
+    if words.is_empty() {
+        return true;
+    }
+    let known = words.iter().filter(|w| COMMON.contains(&w.to_lowercase().as_str())).count();
+    known * 5 >= words.len() * 2
 }
 
 /// What was said, and each word with its place in the audio.
@@ -332,6 +493,8 @@ pub fn unload() {
 pub struct Transcript {
     pub text: String,
     pub words: Vec<TimedWord>,
+    /// "en" or "ne": which model heard it.
+    pub language: &'static str,
 }
 
 /// Longest stretch given to the model at once. Longer audio is cut where it is
@@ -358,10 +521,46 @@ pub fn padded(chunk: &[f32]) -> Vec<f32> {
     out
 }
 
-/// Transcribes 16 kHz mono audio.
+/// Transcribes 16 kHz mono audio, in the voice language (`voice_language`):
+/// - "en": Parakeet only — today's behaviour, no added latency.
+/// - "ne": IndicConformer only.
+/// - "auto" (default): Parakeet first. English users pay nothing extra:
+///   a transcript that reads as English is kept as it is. When it does not
+///   read as English and the Nepali model is here, the same audio is heard
+///   again in Nepali and that text wins when it is Devanagari — Parakeet
+///   cannot write Devanagari, so Nepali speech only ever reaches the Nepali
+///   model this way. Without the Nepali model, Automatic is Parakeet alone.
 pub fn transcribe(samples: &[f32]) -> Option<Transcript> {
-    let rec = recognizer()?;
+    match voice_language() {
+        VoiceLanguage::Nepali => {
+            let rec = nepali_recognizer()?;
+            transcribe_with(&rec, samples, "ne")
+        }
+        VoiceLanguage::English => {
+            let rec = recognizer()?;
+            transcribe_with(&rec, samples, "en")
+        }
+        VoiceLanguage::Auto => {
+            let rec = recognizer()?;
+            let en = transcribe_with(&rec, samples, "en")?;
+            if !en.text.is_empty() && !looks_english(&en.text) {
+                if let Some(ne_rec) = nepali_recognizer() {
+                    if let Some(ne) = transcribe_with(&ne_rec, samples, "ne") {
+                        if !ne.text.is_empty() && contains_devanagari(&ne.text) {
+                            return Some(ne);
+                        }
+                    }
+                }
+            }
+            Some(en)
+        }
+    }
+}
+
+/// One recognizer's pass over 16 kHz mono audio.
+fn transcribe_with(rec: &OfflineRecognizer, samples: &[f32], lang: &'static str) -> Option<Transcript> {
     let mut out = Transcript::default();
+    out.language = lang;
     for (offset, chunk) in audio::split_for_model(samples, SAMPLE_RATE, MAX_CHUNK_SECONDS) {
         if chunk.len() < (SAMPLE_RATE as usize) / 4 {
             continue;
@@ -475,12 +674,33 @@ mod tests {
     fn the_downloads_add_up() {
         assert_eq!(PARAKEET.total_size(), 652_184_281 + 11_845_275 + 6_355_277 + 93_939);
         assert!(DIARIZER.total_size() < 40_000_000);
-        for set in [&PARAKEET, &DIARIZER] {
+        assert_eq!(INDIC_NEPALI.total_size(), 197_585_135 + 67_605);
+        for set in [&PARAKEET, &DIARIZER, &INDIC_NEPALI] {
             for f in set.files {
                 assert_eq!(f.sha256.len(), 64, "{}", f.name);
                 assert!(f.url.starts_with("https://huggingface.co/"), "{}", f.name);
             }
         }
+    }
+
+    #[test]
+    fn nepali_is_devanagari_and_english_reads_as_english() {
+        assert!(contains_devanagari("ओके भोलेनाथ, मलाई संगीत बजाऊ"));
+        assert!(!contains_devanagari("OK Bholeynath, play some music"));
+        assert!(looks_english("OK Bholeynath, play some music"));
+        assert!(looks_english("add Stripe to the island"));
+        assert!(!looks_english("malai ke ho mero naam"));
+        assert!(!looks_english("mero naam samir ho"));
+        assert!(looks_english(""));
+    }
+
+    #[test]
+    fn the_voice_language_comes_from_the_prefs() {
+        assert_eq!(VoiceLanguage::from_prefs("en"), VoiceLanguage::English);
+        assert_eq!(VoiceLanguage::from_prefs("ne"), VoiceLanguage::Nepali);
+        assert_eq!(VoiceLanguage::from_prefs("auto"), VoiceLanguage::Auto);
+        assert_eq!(VoiceLanguage::from_prefs(""), VoiceLanguage::Auto);
+        assert_eq!(VoiceLanguage::from_prefs("fr"), VoiceLanguage::Auto);
     }
 }
 

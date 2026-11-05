@@ -1764,7 +1764,8 @@ extension IslandWindowController {
            runner.info.webSearchEnabled, runner.info.hasWebKey, VoiceSettings.speakEnabled {
             // A web search takes a few seconds: say so instead of going quiet.
             VoiceSpeaker.shared.onDidFinish = nil
-            let wait = VoiceSettings.language == "fr" ? "Je regarde." : "Let me check."
+            let wait = VoiceSettings.language == "fr" ? "Je regarde."
+                : VoiceSettings.language == "ne" ? "हेर्दै छु।" : "Let me check."
             VoiceSpeaker.shared.speak(wait, locale: VoiceSettings.answerLocale)
         }
 
@@ -2003,7 +2004,7 @@ extension IslandWindowController {
         // answer in mine ("You're speaking French. Want me to answer in French?").
         if !expectAnswer, !ClaudeVoiceBrain.isActive, !VoiceSettings.languageOfferDone,
            let spoken = VoiceEngine.shared.speechLocale?.language.languageCode?.identifier,
-           ["fr", "en"].contains(spoken), spoken != VoiceSettings.language,
+           ["fr", "en", "ne"].contains(spoken), spoken != VoiceSettings.language,
            VoiceEngine.shared.isEnabled {
             VoiceSettings.languageOfferDone = true
             let offer = VoiceActionRunner.shared.offerLanguageSwitch(to: spoken)
@@ -2045,7 +2046,8 @@ extension IslandWindowController {
         }
         appendAppLog("nb.log", "[Voice] Claude turn \(Int(Date().timeIntervalSince(t0) * 1000)) ms\(reply.acted ? ", acted" : "")")
         let fr = VoiceSettings.language == "fr"
-        let text = reply.text.isEmpty ? (fr ? "C'est fait." : "Done.") : reply.text
+        let ne = VoiceSettings.language == "ne"
+        let text = reply.text.isEmpty ? (fr ? "C'est fait." : ne ? "सकियो।" : "Done.") : reply.text
         VoiceTranscriptHistory.shared.record(transcript: transcript, note: text, origin: .brain)
         consecutiveFailures = 0
         if reply.acted { NotificationCenter.default.post(name: .triggerEmote, object: BotEmote.happy) }
@@ -2073,7 +2075,9 @@ extension IslandWindowController {
         fsm.openedExternally()
         expand(to: .mail)
         let fr = VoiceSettings.language == "fr"
+        let ne = VoiceSettings.language == "ne"
         let text = fr ? "\(url.lastPathComponent) est en pièce jointe. Tu n'as plus qu'à cliquer sur Envoyer."
+                      : ne ? "\(url.lastPathComponent) संलग्न छ। अब Send थिच्नुहोस्।"
                       : "\(url.lastPathComponent) is attached. Just click Send."
         if VoiceSettings.speakEnabled {
             VoiceSpeaker.shared.onDidFinish = nil

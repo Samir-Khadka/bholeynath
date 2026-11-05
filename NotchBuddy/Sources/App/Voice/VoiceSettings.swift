@@ -35,14 +35,16 @@ enum VoiceSettings {
         set { UserDefaults.standard.set(newValue, forKey: captionEnabledKey) }
     }
 
-    /// Language Bholeynath ANSWERS in: "en" (default) or "fr".
+    /// Language Bholeynath ANSWERS in: "en" (default), "fr" or "ne".
     static var language: String {
         get { UserDefaults.standard.string(forKey: "voiceLanguage") ?? "en" }
         set { UserDefaults.standard.set(newValue, forKey: "voiceLanguage") }
     }
-    static var answerLocale: Locale { Locale(identifier: language == "fr" ? "fr-FR" : "en-US") }
+    static var answerLocale: Locale {
+        Locale(identifier: language == "fr" ? "fr-FR" : language == "ne" ? "ne-NP" : "en-US")
+    }
 
-    /// Language Bholeynath LISTENS to: "auto" (the Mac's dictation language, default), "en" or "fr".
+    /// Language Bholeynath LISTENS to: "auto" (the Mac's dictation language, default), "en", "fr" or "ne".
     /// Independent from the answer language: speak French, hear English.
     static var listenLanguage: String {
         get { UserDefaults.standard.string(forKey: "voiceListenLanguage") ?? "auto" }

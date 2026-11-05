@@ -111,17 +111,18 @@ final class ClaudeVoiceBrain {
 
     private static func systemPrompt() -> String {
         let fr = VoiceSettings.language == "fr"
+        let ne = VoiceSettings.language == "ne"
         let today = Date().formatted(.dateTime.weekday(.wide).day().month(.wide).year().hour().minute()
-            .locale(Locale(identifier: fr ? "fr_FR" : "en_US")))
+            .locale(Locale(identifier: fr ? "fr_FR" : ne ? "ne_NP" : "en_US")))
         let state = AppState.shared
         let active = ([state.mainPillId] + Array(state.activeIntegrations))
             .compactMap { PillCatalog.definition(for: $0)?.name }
         let available = PillCatalog.available.map(\.name).joined(separator: ", ")
-        let language = fr ? "French" : "English"
+        let language = fr ? "French" : ne ? "Nepali" : "English"
         return """
         You are Bholeynath, a voice assistant living in the notch of the user's Mac, a bit like Jarvis: \
         quick, warm, a little playful. It is \(today).
-        Everything you write is read aloud: answer in \(language) (the user may speak French or English), \
+        Everything you write is read aloud: answer in \(language) (the user may speak Nepali or English), \
         in one or two short sentences, no markdown, no lists, no emojis, no links.
         Act with the tools instead of describing: pills, music, service_info for the user's own data \
         (Stripe sales, GitHub, Vercel, Resend, n8n, Notion, Cal.com, agent sessions like Claude Code, \

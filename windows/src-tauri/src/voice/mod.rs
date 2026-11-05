@@ -54,13 +54,18 @@ fn pending() -> &'static Mutex<HashMap<u64, mpsc::Sender<String>>> {
 static NEXT_ID: AtomicU64 = AtomicU64::new(1);
 
 /// Whether « OK Bholeynath » can run: the voice model and a Claude key.
+/// Nepali needs its model too — Automatic and English need only Parakeet.
 pub fn requirements_met() -> bool {
-    speech::is_ready() && crate::secrets::present(crate::claude::KEY)
+    speech::is_ready()
+        && (speech::voice_language() != speech::VoiceLanguage::Nepali || speech::is_nepali_ready())
+        && crate::secrets::present(crate::claude::KEY)
 }
 
 /// Starts or stops listening to follow the preference.
 pub fn sync(app: &AppHandle) {
-    let wanted = crate::flow::get(app).is_some_and(|f| f.store.lock().unwrap().prefs.voice);
+    let prefs = crate::flow::get(app).map(|f| f.store.lock().unwrap().prefs.clone());
+    let wanted = prefs.as_ref().is_some_and(|p| p.voice);
+    speech::set_voice_language(prefs.as_ref().map(|p| p.voice_language.as_str()).unwrap_or("auto"));
     let mut running = RUNNING.lock().unwrap();
     match (wanted && requirements_met(), running.is_some()) {
         (true, false) => {
@@ -256,11 +261,12 @@ fn speak(app: &AppHandle, text: &str) {
         std::thread::sleep(Duration::from_millis(1500));
         return;
     }
-    let audio = if output == "elevenlabs" { elevenlabs(text, &gender).map(|mp3| base64(&mp3)) } else { None };
+    let lang = wake::speech_lang(text);
+    let audio = if output == "elevenlabs" { elevenlabs(text, &gender, lang).map(|mp3| base64(&mp3)) } else { None };
     let id = NEXT_ID.fetch_add(1, Ordering::Relaxed);
     let (tx, rx) = mpsc::channel();
     pending().lock().unwrap().insert(id, tx);
-    let _ = app.emit_to(pill::LABEL, "voice-say", Say { id, text: text.into(), lang: wake::speech_lang(text), audio, gender });
+    let _ = app.emit_to(pill::LABEL, "voice-say", Say { id, text: text.into(), lang, audio, gender });
     let words = crate::flow::text::word_count(text) as u64;
     let _ = rx.recv_timeout(Duration::from_millis(4000 + words * 600));
     pending().lock().unwrap().remove(&id);
@@ -311,17 +317,20 @@ pub async fn voice_say_native(text: String, lang: Option<String>) -> bool {
 }
 
 /// ElevenLabs' MP3 for `text`, with the user's key; None and the system voice speaks.
-fn elevenlabs(text: &str, gender: &str) -> Option<Vec<u8>> {
+/// Nepali answers use `eleven_v3` — `eleven_flash_v2_5` cannot speak Nepali;
+/// English keeps the low-latency flash model.
+fn elevenlabs(text: &str, gender: &str, lang: Option<&str>) -> Option<Vec<u8>> {
     let key = crate::secrets::get("elevenlabs-api-key")?;
     tauri::async_runtime::block_on(async {
         let client = reqwest::Client::builder().timeout(Duration::from_secs(10)).build().ok()?;
         let voices: Value = client.get("https://api.elevenlabs.io/v1/voices").header("xi-api-key", &key).send().await.ok()?.json().await.ok()?;
-        let voice = pick_voice(voices["voices"].as_array()?, gender)?;
+        let voice = pick_voice(voices["voices"].as_array()?, gender, lang)?;
+        let model = if lang == Some("ne-NP") { "eleven_v3" } else { "eleven_flash_v2_5" };
         let response = client
             .post(format!("https://api.elevenlabs.io/v1/text-to-speech/{voice}?output_format=mp3_44100_128"))
             .header("xi-api-key", &key)
             .header("accept", "audio/mpeg")
-            .json(&json!({ "text": text, "model_id": "eleven_flash_v2_5" }))
+            .json(&json!({ "text": text, "model_id": model }))
             .send()
             .await
             .ok()?;
@@ -333,9 +342,12 @@ fn elevenlabs(text: &str, gender: &str) -> Option<Vec<u8>> {
     })
 }
 
-/// First English voice of the gender (a young one first for a man); else any
-/// voice of the gender; else the first one. Same choice as the Mac.
-pub fn pick_voice(voices: &[Value], gender: &str) -> Option<String> {
+/// First voice of the gender in the answer's language (Nepali first for a
+/// Nepali answer — ElevenLabs' `eleven_v3` still speaks Nepali with an
+/// English voice, just with an accent; English first otherwise, a young one
+/// first for a man); else any voice of the gender; else the first one. Same
+/// choice as the Mac.
+pub fn pick_voice(voices: &[Value], gender: &str, lang: Option<&str>) -> Option<String> {
     let label = |v: &Value, k: &str| v["labels"][k].as_str().unwrap_or("").to_lowercase();
     let english = |v: &Value| {
         let lang = label(v, "language");
@@ -345,10 +357,15 @@ pub fn pick_voice(voices: &[Value], gender: &str) -> Option<String> {
         let accent = label(v, "accent");
         accent.is_empty() || ["american", "british", "australian", "irish", "english", "us", "uk"].iter().any(|a| accent.contains(a))
     };
+    let nepali = |v: &Value| label(v, "language").starts_with("ne");
     let of_gender: Vec<&Value> = voices.iter().filter(|v| label(v, "gender") == gender).collect();
-    let english_ones: Vec<&&Value> = of_gender.iter().filter(|v| english(v)).collect();
-    let young = if gender == "male" { english_ones.iter().find(|v| label(v, "age").contains("young")).copied() } else { None };
-    let v = young.or_else(|| english_ones.first().copied()).copied().or_else(|| of_gender.first().copied()).or_else(|| voices.first())?;
+    let in_lang: Vec<&&Value> = if lang == Some("ne-NP") {
+        of_gender.iter().filter(|v| nepali(v)).collect()
+    } else {
+        of_gender.iter().filter(|v| english(v)).collect()
+    };
+    let young = if gender == "male" { in_lang.iter().find(|v| label(v, "age").contains("young")).copied() } else { None };
+    let v = young.or_else(|| in_lang.first().copied()).copied().or_else(|| of_gender.first().copied()).or_else(|| voices.first())?;
     v["voice_id"].as_str().map(String::from)
 }
 
@@ -544,9 +561,23 @@ mod tests {
             {"voice_id":"c","labels":{"gender":"female","accent":"american"}},
             {"voice_id":"d","labels":{"gender":"female","language":"fr"}}
         ]"#).unwrap();
-        assert_eq!(pick_voice(&voices, "male").as_deref(), Some("b"));
-        assert_eq!(pick_voice(&voices, "female").as_deref(), Some("c"));
-        assert_eq!(pick_voice(&[], "female"), None);
+        assert_eq!(pick_voice(&voices, "male", None).as_deref(), Some("b"));
+        assert_eq!(pick_voice(&voices, "female", None).as_deref(), Some("c"));
+        assert_eq!(pick_voice(&[], "female", None), None);
+    }
+
+    #[test]
+    fn a_nepali_answer_prefers_a_nepali_voice() {
+        let voices: Vec<Value> = serde_json::from_str(r#"[
+            {"voice_id":"en","labels":{"gender":"female","language":"en"}},
+            {"voice_id":"ne","labels":{"gender":"female","language":"ne"}},
+            {"voice_id":"m","labels":{"gender":"male","language":"ne"}}
+        ]"#).unwrap();
+        assert_eq!(pick_voice(&voices, "female", Some("ne-NP")).as_deref(), Some("ne"));
+        assert_eq!(pick_voice(&voices, "female", None).as_deref(), Some("en"));
+        // No Nepali voice of the gender: the English voice still speaks
+        // Nepali through eleven_v3, so it is picked rather than nothing.
+        assert_eq!(pick_voice(&voices, "male", Some("ne-NP")).as_deref(), Some("m"));
     }
 }
 

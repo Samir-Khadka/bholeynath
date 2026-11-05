@@ -22,15 +22,32 @@ struct VoiceAskView: View {
             VStack(alignment: .leading, spacing: 16) {
                 Text("Ask about your agents")
                     .font(.title2.bold())
-                Text("Tap the microphone, ask what your agents are doing, then hear the status spoken back.")
+                Text("Tap the microphone, ask what your agents are doing, then hear the status spoken back — in English or Nepali.")
                     .foregroundStyle(.secondary)
-                Button {
-                    Task { await dictation.toggle(startingFrom: "") }
-                } label: {
-                    Label(dictation.isRecording ? "Listening…" : "Tap to speak",
-                          systemImage: dictation.isRecording ? "mic.fill" : "mic")
+                HStack(spacing: 12) {
+                    Button {
+                        Task { await dictation.toggle(startingFrom: "") }
+                    } label: {
+                        Label(dictation.isRecording ? "Listening…" : "Tap to speak",
+                              systemImage: dictation.isRecording ? "mic.fill" : "mic")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    Menu {
+                        Picker("Dictation language", selection: $dictation.localeID) {
+                            ForEach(Dictation.languages, id: \.self) { id in
+                                Text(Locale.current.localizedString(forIdentifier: id) ?? id).tag(id)
+                            }
+                        }
+                    } label: {
+                        Text(Dictation.shortName(dictation.localeID))
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(.secondary.opacity(0.15), in: Capsule())
+                    }
+                    .accessibilityLabel("Dictation language")
                 }
-                .buttonStyle(.borderedProminent)
                 if !dictation.transcript.isEmpty {
                     Text("You said: \(dictation.transcript)")
                 }
@@ -85,7 +102,18 @@ struct VoiceAskView: View {
     private func speak(_ text: String) {
         speaker.stopSpeaking(at: .immediate)
         let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        utterance.voice = AVSpeechSynthesisVoice(language: voiceLanguage(for: text))
         speaker.speak(utterance)
+    }
+
+    /// Nepali when the text is Devanagari, else the language the question
+    /// was dictated in (the sheet's picker, remembered), else the iPhone's
+    /// language. Never a hard-coded "en-US": a Nepali answer was read in an
+    /// English voice before this.
+    private func voiceLanguage(for text: String) -> String {
+        if text.unicodeScalars.contains(where: { (0x0900...0x097F).contains($0.value) }) {
+            return "ne-NP"
+        }
+        return dictation.localeID
     }
 }

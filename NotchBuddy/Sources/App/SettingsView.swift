@@ -1536,6 +1536,11 @@ struct SettingsView: View {
     @State private var elevenKeySaved: Bool = KeychainStore.shared.get(ElevenLabsTTS.keyName) != nil
 
     private func speakVoiceSample() {
+        if voiceLanguage == "ne" {
+            VoiceSpeaker.shared.speak("नमस्ते, म Bholeynath हुँ। जब चाहिन्छ, ओके भोलेनाथ भन्नुहोस्।",
+                                      locale: Locale(identifier: "ne-NP"))
+            return
+        }
         let en = voiceLanguage != "fr"
         VoiceSpeaker.shared.speak(en ? "Hi, I'm Bholeynath. Say OK Bholeynath whenever you need me."
                                      : "Salut, c'est Bholeynath. Dis OK Bholeynath quand tu as besoin de moi.",
@@ -1613,6 +1618,7 @@ struct SettingsView: View {
                         Text(String(localized: "voice.lang-auto")).tag("auto")
                         Text(verbatim: "Français").tag("fr")
                         Text(verbatim: "English").tag("en")
+                        Text(verbatim: "नेपाली").tag("ne")
                     }
                     .labelsHidden()
                     .pickerStyle(.segmented)
@@ -1624,6 +1630,7 @@ struct SettingsView: View {
                     Picker(String(localized: "voice.language"), selection: $voiceLanguage) {
                         Text(verbatim: "Français").tag("fr")
                         Text(verbatim: "English").tag("en")
+                        Text(verbatim: "नेपाली").tag("ne")
                     }
                     .labelsHidden()
                     .pickerStyle(.segmented)
@@ -1632,6 +1639,16 @@ struct SettingsView: View {
                         // Chosen by hand: Bholeynath no longer offers to switch.
                         VoiceSettings.languageOfferDone = true
                         ElevenLabsTTS.shared.reset()
+                    }
+                }
+                if voiceEngine.nepaliServerRecognition {
+                    HStack(spacing: 6) {
+                        Image(systemName: "info.circle")
+                            .foregroundColor(.orange)
+                        Text("Nepali is recognised by Apple on their servers on this Mac — Apple has no on-device Nepali model here. English and French stay on this Mac.")
+                            .font(.system(size: 11))
+                            .foregroundColor(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
             }
@@ -1685,7 +1702,7 @@ struct SettingsView: View {
                                })
                         .frame(maxWidth: 180)
                     }
-                    let current = VoiceSpeaker.macVoiceName(for: Locale(identifier: voiceLanguage == "fr" ? "fr-FR" : "en-US"),
+                    let current = VoiceSpeaker.macVoiceName(for: VoiceSettings.answerLocale,
                                                             gender: elevenGender)
                     Text(String(format: String(localized: "voice.mac-voice-current %@"), current))
                         .font(.system(size: 11))

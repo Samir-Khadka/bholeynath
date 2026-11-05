@@ -148,6 +148,6 @@ function setup(ctx: HubContext): HTMLElement {
   body.append(row(t("Turn on dictation"), null, toggle(status.prefs.enabled, (on) => {
     void ctx.setPrefs((p) => (p.enabled = on)).then(() => ctx.navigate("dictation"));
   })));
-  body.append(row(t("Parakeet, on your computer"), t("The most accurate, offline, 25 languages. Downloaded once (about {0} MB).", { 0: number(status.models.downloadMb) }), modelsControl(ctx, () => ctx.navigate("dictation"))));
+  body.append(row(t("Voice models, on your computer"), t("Parakeet hears English, IndicConformer hears Nepali — both on this computer, without the internet. Downloaded once (about {0} MB).", { 0: number(status.models.downloadMb) }), modelsControl(ctx, () => ctx.navigate("dictation"))));
   return glowCard("#FB923C", body);
 }

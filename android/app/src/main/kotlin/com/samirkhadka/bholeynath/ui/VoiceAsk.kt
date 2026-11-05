@@ -57,6 +57,11 @@ fun VoiceDictateButton(onTranscript: (String) -> Unit, enabled: Boolean) {
                     Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
                         putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                         putExtra(RecognizerIntent.EXTRA_PROMPT, label)
+                        // The phone's language, said out loud: a Nepali phone
+                        // dictates in Nepali, an English phone in English.
+                        // Without this the recognizer may keep the language
+                        // it used last, which is not necessarily this phone's.
+                        putExtra(RecognizerIntent.EXTRA_LANGUAGE, java.util.Locale.getDefault().toLanguageTag())
                     },
                 )
             }
@@ -82,6 +87,16 @@ class VoiceSpeaker(appContext: Context) {
     }
 
     private fun speakNow(text: String) {
+        // Read aloud in the message's language: a Nepali message is spoken
+        // with a Nepali voice when the phone has one, and the language goes
+        // back to the phone's default for the next message. Anything else
+        // keeps the engine's default language, as before.
+        val nepali = java.util.Locale.forLanguageTag("ne-NP")
+        if (text.any { it in '\u0900'..'\u097F' } && tts.isLanguageAvailable(nepali) >= TextToSpeech.LANG_AVAILABLE) {
+            tts.language = nepali
+        } else {
+            tts.language = java.util.Locale.getDefault()
+        }
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "bholeynath")
     }
 
